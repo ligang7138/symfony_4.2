@@ -1,0 +1,158 @@
+parameters:
+    admin_bundle:
+        title: 屹石科技信贷审批系统
+        keywords: 屹石科技信贷审批系统
+        description: 屹石科技信贷审批系统
+        company_name: 屹石科技（北京）有限公司
+        company_address: 北京市朝阳区东大桥8号1楼21层2509室
+        version_info: shop_v1.0.0
+        paramName: p
+        pageSize: 10
+        cacheTime: 15
+        admissible_business_department: 1016
+        timeOut: 12
+        host: http://47.94.152.208/
+        ESB:
+          wsdl: http://47.94.152.208:8088/message_service.wsdl
+          #wsdl: http://192.168.1.10:10003/message_service.wsdl
+          targetSys:
+              channel: {authName: test,authPwd: 123456}
+              pay: {authName: test,authPwd: 123456}
+              api: {authName: api_test,authPwd: 123456}
+              sync: {authName: test,authPwd: 123456}
+        uploadFileUrl: http://47.94.152.208:12345/file/upload.html
+        uploadFileBase64: http://47.94.152.208:12345/file/upload_.html
+        sendUrlUpload: http://47.94.152.208:12345/file/url_upload.html
+        fileHost: http://ysfq-test.oss-cn-beijing.aliyuncs.com/
+        uchecks: ["AdminBundle\\Controller\\CronController::syncOrderEnd","AdminBundle\\Controller\\CronController::getHandleOrderAndPayInfo","AdminBundle\\Controller\\IndexController::noRoleAction","AdminBundle\\Controller\\SecurityController::loginAction","AdminBundle\\Controller\\IndexController::getCode","AdminBundle\\Controller\\SecurityController::getCheckCode","AdminBundle\\Controller\\AdminController::regPartner","AdminBundle\\Controller\\IndexController::regSuccess","AdminBundle\\Controller\\AdminController::forgetPwd","AdminBundle\\Controller\\AdminController::agreementInfo","AdminBundle\\Controller\\AdminController::checkVersion","AdminBundle\\Controller\\AdminController::storeAppDatas"]
+        baiduApiAk: HkNTMR9M1Ajc2gZgQTeiQbSraf8hyaGt
+        order_status:
+            "0": 待确认
+            1: 待审核
+            2: 待支付
+            3: 已支付
+            4: 发货中
+            5: 已发货
+            6: 退款处理中
+            7: 已退款
+            8: 已收货
+            9: 已取消
+            10: 已完成
+            11: 待还款
+            12: 还款确认中
+            13: 支付处理中
+        pay_order_status:
+            2:
+              2: 待支付
+              3: 已支付
+              5: 已发货
+              8: 已收货
+              9: 已取消
+              10: 已完成
+              13: 支付处理中
+            3:
+              "0": 待确认
+              1: 待审核
+              2: 待支付
+              3: 已支付
+              8: 已收货
+              9: 已取消
+              10: 已完成
+              11: 待还款
+              13: 支付处理中
+        #交易状态
+        transaction_status:
+            1: 待支付
+            2: 线上支付
+            3: 线下支付
+            4: 信用支付
+            5: 支付取消
+        #商品状态
+        goods_status:
+            1: 待审核
+            2: 待上架
+            3: 打回
+            4: 审核通过自动上架
+            5: 上架
+            6: 下架
+            7: 拒绝
+        order_pay_type:
+            1: 线下全款
+            2: 线上全款
+            3: 赊购
+        settlement_status:
+            0: 待审核
+            1: 已结算
+            2: 审核拒绝
+            3: 已取消
+            4: 结算失败
+        order_channel:
+            0: 线下
+            1: 线上
+        #学历
+        edu:
+            10 : "研究生及以上"
+            20 : "本科"
+            30 : "专科"
+            40 : "中等技术学校"
+            50 : "技术学校"
+            60 : "高中"
+            70 : "初中"
+            80 : "小学"
+            90 : "小学以下"
+        #婚姻状况
+        marryStatus:
+            10 : "未婚"
+            20 : "已婚"
+            30 : "丧偶"
+            40 : "离异"
+        #还款类型
+        returnType:
+            1 : "等额本息"
+            2 : "先息后本"
+            3 : "等本等息"
+            4 : "等额本金"
+        #文件类型
+        file_type:
+            a : 证件资料
+            b : 店铺头像
+            c : 店铺图片
+            d : 商品图片
+            g : 其它
+        #短信提示语句
+        sms_info:
+            1001 : "您的授信审批已经通过"
+            1002 : "您的授信审批失败"
+            2001 : "您的审批放款已经通过"
+            2002 : "您的审批放款失败"
+            3001 : "您的终审审核已经通过"
+            3002 : "您的终审审核被回退"
+            3003 : "您的终审审核被拒绝"
+        #规格类别
+        spec_type:
+            1 : "重量"
+            2 : "容量"
+        #商品等级
+        goods_grade:
+            1 : "一级"
+            2 : "二级"
+            3 : "三级"
+        #广告位类型
+        bannerType:
+            1 : "首页banner"
+        #操作系统类型
+        os_type:
+            1 : "android"
+            2 : "ios"
+        #app类型
+        app_type:
+            1: "沃投农"
+            2: "未来农资网"
+        api_cache_tables:
+            'qy_goods_cate' : ['cates:all','maps:catname',{service:'api',interface:'sync_goods',params:['gn_id']}]
+            'qy_goods' : ['maps:partnercates',{service:'sync',interface:'sync_goods',params:['g_id']}]
+            'qy_goods_brand' : ['brands:all']
+            'qy_goods_spec_price' : ['specs:all','gstk:{gn_id}']
+            'qy_partners' : [{service:'api',interface:'sync_partner',params:['partner_id']}]
+            'qy_partner_info' : [{service:'api',interface:'sync_partner',params:['partner_id']}]
+            'qy_partner_daturm' : [{service:'api',interface:'sync_partner',params:['partner_id'],match_params:{pd_type:['b','c']}}]

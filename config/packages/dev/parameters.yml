@@ -1,0 +1,26 @@
+#该param文件放在packages目录里dev，prod，test任何一个目录下，项目都会自动加载进去。根据.env文件里APP_ENV的值去加载dev，prod或是test
+parameters:
+    #shoping配置
+    database_host: 47.*.152.*
+    database_port: 3306
+    database_name: qy_shop
+    database_user: ys_test
+    database_password:
+
+    #fenqi配置
+    database_host2: 47.*.152.*
+    database_port2: 3306
+    database_name2: ys_fenqi
+    database_user2: ys_test
+    database_password2:
+
+    #应用密钥
+    secret: 4019e786cf0d98e3a536f04f9319b7d4dad42840
+    #redis配置
+    redis_master_host: redis://192.168.1.51
+    redis_cluster_host: redis://192.168.1.51/1
+
+    admin_bundle:
+        title: 测试
+        timeOut: 12
+        uchecks: ["AdminBundle\\Controller\\CronController::syncOrderEnd","AdminBundle\\Controller\\CronController::getHandleOrderAndPayInfo","AdminBundle\\Controller\\IndexController::noRoleAction","AdminBundle\\Controller\\SecurityController::loginAction","AdminBundle\\Controller\\IndexController::getCode","AdminBundle\\Controller\\SecurityController::getCheckCode","AdminBundle\\Controller\\AdminController::regPartner","AdminBundle\\Controller\\IndexController::regSuccess","AdminBundle\\Controller\\AdminController::forgetPwd","AdminBundle\\Controller\\AdminController::agreementInfo","AdminBundle\\Controller\\AdminController::checkVersion","AdminBundle\\Controller\\AdminController::storeAppDatas"]

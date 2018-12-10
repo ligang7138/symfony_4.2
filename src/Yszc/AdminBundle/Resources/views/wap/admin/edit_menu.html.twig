@@ -1,0 +1,153 @@
+<link href="/public/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<link href="/public/css/plugins/chosen/chosen.css" rel="stylesheet">
+<div class="wrapper wrapper-content fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ">
+                <div class="ibox-content">
+
+                    <form class="form-horizontal m-t" id="commentForm" action="{{ path('admin_admin_editmenu') }}" method="post" onsubmit="fsubmit(this);return false;">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">上级菜单：</label>
+                                <div class="col-sm-4">
+                                    <select id="m_id" data-placeholder="选择上级菜单" class="chosen-select" style="width:300px;" tabindex="1">
+                                       <option value="0">无</option>
+                                        {% for key,m in menus %}
+                                            {% if m.menuName is not null %}
+                                                <option value="{{ m.menuId }}" {% if menu.getMenuChildId == m.menuId %} selected {% endif %}>{{ m.menuPadding | raw }}{{ m.menuName }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>    
+                                </div>
+                            </div>    
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单名称：</label>
+                                <div class="col-sm-4">
+                                    <input id="m_name" name="m_name" minlength="2" type="text" class="form-control" required="" aria-required="true" value="{{ menu.menuName }}">
+                                    <input id="m_router" name="m_router" type="hidden" value="{{ menu.menuRouteName }}">
+                                    <input id="m_cid" name="m_cid" type="hidden" value="{{ menu.menuChildId }}">
+                                    <input id="mid" name="mid" type="hidden" value="{{ menu.menuId }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单路由：</label>
+                                <div class="col-md-4">
+                                    <fieldset>
+                                        <div class="radio radio-info radio-inline"  onclick="select(1);">
+                                            <input id="inlineRadio1" value="1" name="router_type" {% if router_type == 1 %} checked {% endif %} type="radio">
+                                            <label for="inlineRadio1">内部路由</label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline" onclick="select(2);">
+                                            <input id="inlineRadio2" value="2" name="router_type" {% if router_type == 2 %} checked {% endif %} type="radio">
+                                            <label for="inlineRadio2">外部路由</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="form-group" id="router_show">
+                                <label class="col-sm-3 control-label">路由列表：</label>
+                                <div class="col-sm-4">
+                                    <div class="input-group">
+                                       <select id="router" data-placeholder="选择路由" class="chosen-select" style="width:300px;" tabindex="1">
+                                           {% for k,value in router_list %}
+                                               <option value="{{ k }}" {% if menu.menuRouteName == k %} selected {% endif %}>{{ value }}</option>
+                                            {% endfor %}
+                                       </select>
+                                   </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="router2_show">
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">菜单图标(ICON)：</label>
+                                <div class="col-sm-4">
+                                    <input id="m_icon" name="m_icon" minlength="2" type="text" class="form-control" value="{{ menu.menuIcon }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">是否启用：</label>
+                                <div class="col-md-4">
+                                    <fieldset>
+                                        <div class="radio radio-info radio-inline">
+                                            <input id="inlineRadio3" value="1" {% if menu.menuStatus == 1 %} checked {% endif %}  name="m_status" type="radio">
+                                            <label for="inlineRadio3">启用</label>
+                                        </div>
+                                        <div class="radio radio-danger radio-inline">
+                                            <input id="inlineRadio4" value="0" {% if menu.menuStatus == 0 %} checked {% endif %} name="m_status" type="radio">
+                                            <label for="inlineRadio4">停用</label>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-3">
+                                    <button class="btn btn-white" type="reset">重置</button>
+                                    <button class="btn btn-primary" type="submit">保存</button>
+                                </div>
+                            </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/public/js/plugins/chosen/chosen.jquery.js"></script>
+<script>
+$(document).ready(function() {
+    $("#router").chosen().change(function(){
+        $('#m_router').val($("#router").val());
+
+    });
+    $("#m_id").chosen().change(function(){
+        $('#m_cid').val($("#m_id").val());
+
+    });
+    select({{ router_type }});
+    function e() {
+        var e = $("body")[0].style;
+    }
+    $("#zoomIn").click(function() {
+        o.cropper("zoom", .1)
+    }),
+    $("#zoomOut").click(function() {
+        o.cropper("zoom", -.1)
+    }),
+    $("#rotateLeft").click(function() {
+        o.cropper("rotate", 45)
+    }),
+    $("#rotateRight").click(function() {
+        o.cropper("rotate", -45)
+    }),
+    $("#setDrag").click(function() {
+        o.cropper("setDragMode", "crop")
+    });
+    e();
+});
+var config = {
+    ".chosen-select": {},
+    ".chosen-select-deselect": {
+        allow_single_deselect: !0
+    },
+    ".chosen-select-no-single": {
+        disable_search_threshold: 10
+    },
+    ".chosen-select-no-results": {
+        no_results_text: "Oops, nothing found!"
+    },
+    ".chosen-select-width": {
+        width: "95%"
+    }
+};
+for (var selector in config) $(selector).chosen(config[selector]);
+function select(v){
+    $('#router_show').hide();
+    $('#router2_show').html('<label class="col-sm-3 control-label">路由列表：</label><div class="col-sm-4"><input id="m_router2" name="m_router2" minlength="5" type="text" class="form-control" value="{{ menu.menuRouteName }}"  required="" aria-required="true"></div>').show();
+    if(1==v){
+        $('#router_show').show();
+        $('#router2_show').html('').hide();
+    }
+}
+
+</script>

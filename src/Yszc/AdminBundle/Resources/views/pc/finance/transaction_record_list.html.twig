@@ -1,0 +1,200 @@
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <div class="panel-heading">
+                        <div class="col-md-12 form-group form-bolck" style="line-height: 47px;">
+                            <label class="control-label">商户可用余额：</label>
+                            <span class="control-text" style="font-size: 20px;">{{ settlement_info.surplus_settlement_amt|number_format(2, '.', ',') }}</span>元
+                            <input id="cash_amt" placeholder="请输入提现金额"  class="form-control put_forward_input" value="" type="text" style="margin-left: 15px;width: 200px;display: inline-block;" data-rule-number="true"  data-rule-range="1000,10000">
+                            <button class="btn btn-primary put_forward">提现</button>
+                            <span class="text-warning" style="color: #ff8e89;">注：手续费：1元/笔，每笔限额范围：1000~10000元</span>
+                        </div>
+                        <h3 class="panel-title" style="padding-bottom: 10px;">交易记录：</h3>
+                    </div>
+                    <div class="pull-left form-inline clearfix" style="min-height: 60px;height: auto;padding: 10px 8px;">
+                        <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                            <div class="input-group">
+                                <select class="form-control" id="os_channel" name="os_channel">
+                                    <option value="">--请选择结算通道--</option>
+                                    {% for k,v in admin_bundle.order_channel %}
+                                        <option {% if ''!=params.os_channel and params.os_channel == k %} selected="selected" {% endif %} value="{{ k }}">{{ v }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <select class="form-control" id="os_status" name="os_status">
+                                    <option value="">--请选择结算状态--</option>
+                                    {% for key,val in admin_bundle.settlement_status %}
+                                        <option {% if ''!=params.os_status and params.os_status == key %} selected="selected" {% endif %} value="{{ key }}">{{ val }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="input-group">
+                                <div class="input-daterange" data-plugin="datepicker" data-language="zh-CN" data-todayHighlight="true">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="icon wb-calendar" aria-hidden="true"></i>
+                                        </span>
+                                        <input type="text" class="form-control selectData startDate" value="{{ params.os_start }}" name="os_start" placeholder="交易-开始时间" id="os_start" readonly>
+                                        <span class="input-group-addon"> 至 </span>
+                                        <input type="text" class="form-control selectData endDate" value="{{ params.os_end }}" name="os_end" placeholder="交易-结束时间" id="os_end" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <span>
+                                <button type="button" onclick="get{{ tabid }}Page();" class="btn btn-primary"> 搜索</button>
+                                <button type="button" onclick="$('#os_channel').val('');$('#os_status').val('');$('#os_end').val('');$('#os_start').val('');" class="btn btn-default">清空</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 table-responsive">
+                        <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap">
+                            <thead>
+                            <tr>
+                                <th>流水号</th>
+                                <th>交易金额</th>
+                                <th>结算通道</th>
+                                <th>交易时间</th>
+                                <th>交易状态</th>
+                                <th>备注</th>
+                                <th width="8%">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key,settlement_order in settlementOrderList %}
+	                            {% set d_diff = settlement_order.os_apply_time|get2dateDiff %}
+                                <tr>
+                                    <td>{{ settlement_order.os_id }}</td>
+                                    <td>{{ settlement_order.os_amount }}</td>
+                                    <td>{{ attribute(admin_bundle.order_channel,settlement_order.os_channel) }}</td>
+                                    <td>{{ settlement_order.os_apply_time }}</td>
+                                    <td>{{ attribute(admin_bundle.settlement_status,settlement_order.os_status) }}</td>
+                                    <td>{{ settlement_order.os_remark }}</td>
+                                    <td width="8%">{% if settlement_order.os_status==0 and d_diff<600 %}<button class="btn btn-primary" type="button" onclick="confirm('确认撤销申请吗？',function() {
+	                                    cancle_apply({{ settlement_order.os_id }});});">撤销申请</button>{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function get{{ tabid }}Page(nums){
+        nums = (nums>0) ? nums : 1;
+        var os_channel = $('#os_channel').val();
+        var os_status = $('#os_status').val();
+        var os_start = $('#os_start').val();
+        var os_end = $('#os_end').val();
+        var obj=new Object();
+        obj.os_channel = os_channel;
+        obj.os_status = os_status;
+        obj.os_start = os_start;
+        obj.os_end = os_end;
+        onPage(nums,window.location.href,obj);
+    }
+
+    //  日期选择配置
+    nowTime();
+    var date=document.querySelectorAll('.selectData');
+    var end = { theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"}, format: "YYYY-MM-DD hh:mm:ss", maxDate: now_date, minDate: null};
+    for(var dTime=0;dTime<date.length;dTime++) {
+        jeDate(date[dTime], {
+            theme: {bgcolor: "#4e97d9", color: "#ffffff", pnColor: "#00CCFF"},
+            format: "YYYY-MM-DD hh:mm:ss",
+            maxDate: now_date,
+            donefun: function (obj) {
+                if ($(obj.elem).hasClass('startDate')) {
+                    var sTime = obj.val;
+                    end.minDate = sTime; //开始日选好后，重置结束日的最小日期
+                    endDates();
+                }
+            },
+        });
+    }
+    //这里是日期联动的关键
+    function endDates() {
+        end.trigger = false;
+        jeDate('.endDate',end)
+    }
+    
+    /*function applyCash() {
+        var cash_amt = $('#cash_amt').val();
+        if(cash_amt<1000 || cash_amt>10000){
+            alert('提现金额超出单笔限额范围！');
+        }else{
+            fajax('/partner/cash.html',{'cash_amt':cash_amt},'POST','JSON',function (d) {
+                if(301==d.code){
+                    window.location='/login';
+                }else{
+                    if(200==d.code){
+                        msg(d.msg);
+                    }else{
+                        msg(d.msg,null,2);
+                    }
+                }
+                setTimeout(function () {
+                    location.reload();
+                },1500);
+            });
+        }
+    }*/
+
+    //取消申请
+    function cancle_apply(os_id) {
+        fajax('/partner/cancle_apply.html',{'os_id':os_id},'POST','JSON',function (d) {
+            if(301==d.code){
+                window.location='/login';
+            }else{
+                if(200==d.code){
+                    msg(d.msg);
+                }else{
+                    msg(d.msg,null,2);
+                }
+            }
+            setTimeout(function () {
+                location.reload();
+            },1500);
+        });
+    }
+
+    //提现按钮
+    $('.put_forward').click(function () {
+        var reg=/^[0-9]+([.]{1}[0-9]+){0,1}$/;
+        var cash = $('.put_forward_input').val();
+        if(cash != ''&& reg.test(cash)){
+           if(cash<1000||cash>10000){
+               alert('<font color="red">提现金额超出单笔限额范围！</font>');
+           }else{
+               fajax('/partner/cash.html',{'cash_amt':cash},'POST','JSON',function (d) {
+                   if(301==d.code){
+                       window.location='/login';
+                   }else{
+                       if(200==d.code){
+                           msg(d.msg);
+                       }else{
+                           msg(d.msg,null,2);
+                       }
+                   }
+                   setTimeout(function () {
+                       location.reload();
+                   },1500);
+               });
+           }
+        }else {
+            alert('<font color="red">请输入提现金额（格式为数字）！</font>');
+        }
+    })
+</script>

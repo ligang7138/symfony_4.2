@@ -1,0 +1,17 @@
+<link href={{ "/public/plugins/webuploader/webuploader.css"|gfut }} rel="stylesheet">
+<script>var p_id = '{{ partner.partnerId | default(0) }}',f_type = '{{ f_type }}';</script>
+<div class="wrapper wrapper-content" id="upload_from">
+    <div style="height:450px;"></div>
+</div>
+<script>
+$(document).ready(function () {
+    setTimeout(function(){
+        fajax('/admin/upload/partner.html','','post','html',function(d){
+            $('#upload_from').html(d);
+        });
+    },60);
+    $('.layui-layer-btn').remove();
+    $('.layui-layer-page').css('top','100px');
+ });
+</script>
+

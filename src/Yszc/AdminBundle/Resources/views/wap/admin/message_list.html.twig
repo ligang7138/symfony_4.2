@@ -1,0 +1,95 @@
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <div class="pull-left form-inline clearfix" style="min-height: 60px;height: auto;padding: 10px 8px;">
+                        <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                            <div class="input-group">
+                                <div class="input-daterange" data-plugin="datepicker" data-language="zh-CN" data-todayHighlight="true">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="icon wb-calendar" aria-hidden="true"></i>
+                                        </span>
+                                        <input type="text" class="form-control selectData startDate" value="{{ params.m_start }}" name="m_start" placeholder="起始时间" id="m_start" readonly>
+                                        <span class="input-group-addon"> 至 </span>
+                                        <input type="text" class="form-control selectData endDate" value="{{ params.m_end }}" name="m_end" placeholder="结束时间" id="m_end" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <span>
+                                <button type="button" onclick="get{{ tabid }}Page();" class="btn btn-primary"> 搜索</button>
+                                <button type="button" onclick="$('#m_start').val('');$('#m_end').val('');" class="btn btn-default">清空</button>
+                            </span>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap" data-plugin="dataTable" data-paging="false" data-ordering="false" data-searching="false" data-info="false">
+                        <thead>
+                        <tr>
+                            <th>消息标题</th>
+                            <th>通知时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for k,message in message_list %}
+                            <tr>
+                                <td>{{ message.msg_title }}</td>
+                                <td>{{ message.msg_add_time|format('Y-m-d H:i:s') }}</td>
+                                <td style="border-right:1px solid #e4eaec;">
+                                    <a class="btn btn_ btn-outline  btn-primary" onclick="sopen('/admin/message/{{ message.msg_id }}.html','{{ message.msg_title }}',['400px','200px']);">查看</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function get{{ tabid }}Page(nums){
+        nums = (nums>0) ? nums : 1;
+        var obj = new Object();
+        obj.m_start = $('#m_start').val();
+        obj.m_end = $('#m_end').val();
+        onPage(nums,window.location.href,obj);
+    }
+
+    //  日期选择配置
+    nowTime();
+    var d=document.querySelectorAll('.selectData');
+    var end = {
+        theme: {bgcolor: "#4e97d9", color: "#ffffff", pnColor: "#00CCFF"},
+        format: "YYYY-MM-DD",
+        maxDate: now_date,
+        minDate: null
+    };
+    for(var dTime=0;dTime<d.length;dTime++) {
+        jeDate(d[dTime], {
+            theme: {bgcolor: "#4e97d9", color: "#ffffff", pnColor: "#00CCFF"},
+            format: "YYYY-MM-DD",
+            maxDate: now_date,
+            donefun: function (obj) {
+                if ($(obj.elem).hasClass('startDate')) {
+                    var sTime = obj.val;
+                    end.minDate = sTime; //开始日选好后，重置结束日的最小日期
+                    endDates();
+                }
+            },
+        });
+    }
+    //这里是日期联动的关键
+    function endDates() {
+        end.trigger = false;
+        jeDate('.endDate',end)
+    }
+
+</script>

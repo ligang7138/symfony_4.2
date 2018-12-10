@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <title>{{ admin_bundle.title }}</title>
+
+    <meta name="keywords" content="{{ admin_bundle.keywords }}">
+    <meta name="description" content="{{ admin_bundle.description }}">
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+
+    <link href="{{ '/public/css/bootstrap.min.css'|gfut }}" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ '/public/css/animate.min.css'|gfut }}" rel="stylesheet">
+    <link href="{{ '/public/css/style.min.css'|gfut }}" rel="stylesheet">
+    <style>
+        .container{
+            width: 100%;
+            height: 100%;
+            background: url("{{ '/public/img/login-bg2.jpg' }}") no-repeat center;
+            background-size: cover;
+        }
+        .login_form{
+            display: none;
+            text-align: center;
+        }
+        /* 单个input框包 */
+        .container .form-horizontal .input-warp{
+            width: 100%;
+            margin: 0 0 20px;
+            position: relative;
+        }
+        .form-horizontal .form-control{
+            border-radius: 5px;
+            box-shadow: none;
+            padding: 0 20px 0 45px;
+            height: 42px;
+            transition: all 0.3s ease 0s;
+        }
+        .form-horizontal .form-control:focus{
+            background: #e0e0e0;
+            box-shadow: none;
+            outline: 0 none;
+        }
+        .form-horizontal .form-group i{
+            position: absolute;
+            top: 50%;
+            margin-top: -8.5px;
+            left: 15px;
+            font-size: 17px;
+            color: #c8c8c8;
+            transition : all 0.5s ease 0s;
+        }
+        .form-horizontal .form-control:focus + i{
+            color: #00b4ef;
+        }
+        .form-horizontal .fa-question-circle{
+            display: inline-block;
+            position: absolute;
+            top: 12px;
+            right: 10px;
+            font-size: 20px;
+            color: #808080;
+            transition: all 0.5s ease 0s;
+        }
+        .form-horizontal .fa-question-circle:hover{
+            color: #000;
+        }
+        .form-horizontal .main-checkbox label{
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+        }
+        .form-horizontal .main-checkbox label:after{
+            content: "";
+            width: 10px;
+            height: 5px;
+            position: absolute;
+            top: 5px;
+            left: 4px;
+            border: 3px solid #fff;
+            border-top: none;
+            border-right: none;
+            background: transparent;
+            opacity: 0;
+            -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
+        .form-horizontal .main-checkbox input[type=checkbox]{
+            visibility: hidden;
+        }
+        .form-horizontal .main-checkbox input[type=checkbox]:checked + label:after{
+            opacity: 1;
+        }
+        .form-horizontal .login_btn{
+            float: right;
+            font-size: 14px;
+            color: #fff;
+            background: #00b4ef;
+            border-radius: 5px;
+            padding: 10px 25px;
+            border: none;
+            text-transform: capitalize;
+            transition: all 0.5s ease 0s;
+            width:100%;
+            box-shadow: 0px 1px 4px rgba(0,0,0,0.3),/* 外阴影*/
+            0px 0px 20px rgba(0,0,0,0.1) inset;
+            margin: 30px 0;
+        }
+        /* 错误弹窗 */
+        .container .form-horizontal .alert-danger{
+            width: 100%;
+            height: 31px;
+            background: rgba(255, 128, 145, 0.3);
+            color: #e53232;
+            border: none;
+            position: absolute;
+            top: -31px;
+            margin: 0;
+            padding: 7px 45px;
+        }
+        /*  浏览器标签小图标  */
+        .browser_label{
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            background: url("{{ '/public/img/chrome.png' }}") no-repeat center;
+            background-size: contain;
+            vertical-align: middle;
+            margin: 0 10px;
+        }
+        i.browser_label_firefox{
+            background: url("{{ '/public/img/firefox.png' }}") no-repeat center;
+        }
+        @media only screen and (max-width: 479px){
+            .form-horizontal .form-group{
+                padding: 0 25px;
+            }
+            .form-horizontal .form-group i{
+                left: 45px;
+            }
+            .form-horizontal .btn{
+                padding: 10px 20px;
+            }
+        }
+
+        /* 登陆方式选择 */
+       .register_text{
+            text-align: center;
+            list-style: none;
+            color: #11222c;
+            font-size: 20px;
+            padding: 0px 0 15px;
+            margin-bottom: 20px;
+        }
+        .choose_form{
+            position: relative;
+            display: block;
+        }
+
+        /*  表单提示信息 */
+        #uei_operate_time-error{
+            width: 200px;
+            text-align: left;
+            padding-left: 10px;
+            color: red;
+            position: absolute;
+            left: 400px;
+            top: 12px;
+        }
+        /*  注册成功的icon样式  */
+        .icon_success_warp{width: 100px;height: 100px;border-radius: 50%;background-color: #00fb00;color: white;line-height: 100px;font-size: 67px;margin: 50px auto;}
+    </style>
+</head>
+<body style="background:#f3f4f8;">
+<div style="display:block;width:100%;height:100%;background-position:10% 52%">
+	{% block content %}
+        <div class="container">
+            <div class="row" style="padding-top:7%;" >
+                <div class="center-block" style="width:400px;">
+                    <div class="user_login">
+                        <div class="register_text">帐户密码登录</div>
+                        <form class="form-horizontal login_form clearfix choose_form" method="post" action="{{ path('login_check') }}">
+                            <div class="input-frame-warp">
+								{% if error %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+								{% endif %}
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input type="text" class="form-control" name="_username" value="{{ last_username }}" required placeholder="用户名">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group help input-warp">
+                                    <div class="form-bolck">
+                                        <input type="password" name="_password" class="form-control"  required placeholder="密　码">
+                                        <i class="fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp" style="border: none;">
+                                    <div class="form-bolck">
+                                        <input class="form-control" type="text" name="check_code" style="width: 220px;" required placeholder='验证码'><img style="height: 100%;position: absolute; cursor: pointer; top: 0px;right: 0;" src="{{ path('check_code')}}" onclick="$(this).attr('src','{{ path('check_code')}}?'+ Math.random());" title="换一张">
+                                        <i class="fa fa-check"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group ">
+                                    <input type="hidden" name="ydmx_lei" value="{{ csrf_token('ydmx_lei') }}">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-default login_btn">登录</button>
+                        </form>
+                        <div class="zhuce_account clearfix">
+                            <a onclick="$('.user_login').hide();$('.user_retrieve_password').show()">忘记密码</a>
+                            <a style="float: right" onclick="$('.user_login').hide();$('.user_register').show();">注册账户</a>
+                        </div>
+                    </div>
+                    <div class="user_register" style="display: none">
+                        <div class="register_text">商户注册</div>
+                        <form class="form-horizontal clearfix" id="registerForm" method="post" action="">
+                            <div class="input-frame-warp">
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input type="text" class="form-control buyer_phone" minlength="11" maxlength="11" id="reg_name" name="a_name" value="" required placeholder="请输入11位手机号">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input id="pwd" type="password" class="form-control form_pwd" name="pwd" minlength="6" maxlength="16" value="" required placeholder="请设置6-16位密码，区分大小写">
+                                        <i class=" fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input type="password" class="form-control form_repwd" minlength="6" maxlength="16" id="reg_pwd" name="a_pwd" value="" required placeholder="确认密码">
+                                        <i class="fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input type="service_code" class="form-control" minlength="6" maxlength="16" id="reg_pwd" name="a_pwd" value="" required placeholder="邀请码">
+                                        <i class="fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp clearfix" style="border: none;">
+                                    <div class="form-bolck">
+                                        <input class="form-control" type="text" id="check_code" minlength="6" maxlength="6" name="check_code" style="float:left;width: 280px;display: inline-block;" required placeholder='验证码'>
+                                        <i class="fa fa-check"></i>
+                                        <button type="button" class="btn btn-outline btn-primary" onclick="getCheckCode($(this),1);" style="float:right;display: inline-block;height: 42px;">获取验证码</button>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp">
+                                    <input type="checkbox" style="vertical-align: top;" required checked="checked"><a data-pjax href="/admin/agreement/1.html" target="_blank">《注册服务协议》</a>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-default login_btn" onclick="registerForm();">注册</button>
+                        </form>
+                        <div class="zhuce_account clearfix">
+                            <a style="float:right;" onclick="$('.user_register').hide();$('.user_login').show();">使用已有帐户登录</a>
+                        </div>
+                    </div>
+                    <div class="user_retrieve_password" style="display: none">
+                        <div class="register_text">找回密码</div>
+                        <form class="form-horizontal clearfix forgetPwd" method="post" action="">
+                            <div class="input-frame-warp">
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input type="text" class="form-control buyer_phone" name="forget_name" id="forget_name" value="" required="required" placeholder="请输入11位手机号">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input type="password" class="form-control form_pwd" name="forget_pwd" id="forget_pwd" value="" required="required" placeholder="请设置6-16位密码，区分大小写">
+                                        <i class=" fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp">
+                                    <div class="form-bolck">
+                                        <input type="password" class="form-control form_repwd" name="forget_repwd" id="forget_repwd" value="" required="required" placeholder="确认密码">
+                                        <i class="fa fa-lock"></i>
+                                    </div>
+                                </div>
+                                <div class="form-group input-warp clearfix" style="border: none;">
+                                    <div class="form-bolck">
+                                        <input class="form-control check_code"  type="text" name="forget_check_code" id="forget_check_code" style="float:left;width: 280px;display: inline-block;" required="required" placeholder='验证码'>
+                                        <i class="fa fa-check"></i>
+                                        <button type="button" class="btn btn-outline btn-primary" style="float:right;display: inline-block;height: 42px;" onclick="getCheckCode($(this),2);">获取验证码</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="change_pwd()" class="btn btn-default login_btn">更改密码</button>
+                        </form>
+                        <div class="zhuce_account clearfix">
+                            <a style="float:right;" onclick="$('.user_retrieve_password').hide();$('.user_login').show();">使用已有帐户登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p style="text-align: center;font-size: 16px;color: #807c7c;position: absolute;bottom: 60px;left: 50%;margin-left: -160px;">copyright<span style="padding: 0 5px;">&copy;</span>2018 屹石科技（北京）有限公司</p>
+        </div>
+	{% endblock %}
+</div>
+<script src="{{ '/public/js/jquery.min.js'|gfut }}"></script>
+<script src="/public/js/jquery.pjax.min.js"></script>
+<script src="/public/js/base.js"></script>
+<script src="{{ '/public/js/layer/layer.min.js'|gfut }}"></script>
+<script>
+    //  表单必填信息
+    $("input[required]").parent().append('<span id="uei_operate_time-error" class="help-block m-b-none" style="display: none;">必填！</span>')
+    $('input[required]').blur(function(){
+        if($(this).val()==''){
+            $(this).parents('.form-bolck').addClass('has-error');
+            $(this).parent().find('#uei_operate_time-error').css('display','inline-block');
+        }else{
+            $(this).parents('.form-bolck').removeClass('has-error').addClass('has-success');
+            $(this).parent().find('#uei_operate_time-error').css('display','none');
+        }
+    });
+
+    // 手机号正则判断
+    function check_phone(obj){
+        if(obj.val() != ''){
+            var phoneReg = /^1[3|4|5|7|8]\d{9}$/;
+            if (phoneReg.test(obj.val())){
+                obj.parents('.form-bolck').removeClass('has-error');
+                obj.parent().find('#uei_operate_time-error').css('display','none');
+            }else{
+                obj.parents('.form-bolck').addClass('has-error');
+                obj.parent().find('#uei_operate_time-error').css('display','inline-block');
+                obj.parent().find('#uei_operate_time-error').html('手机号格式错误！');
+                return false;
+            }
+        }else {
+            alert('手机号不能为空');
+            return false;
+        }
+    }
+    $('.buyer_phone').blur(function () {check_phone($(this))});
+    //  密码长度判断
+    $('.form_pwd').blur(function () {
+        var strongRegex = new RegExp("^(?=.{8,16})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");  // 由数字、26个英文字母(大小写都有)和特殊符号组成的字符串 8-16个字符
+        var mediumRegex = new RegExp("^(?=.{7,16})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");//密码为七位及以上并且字母、数字、特殊字符三项中有两项，强度是中等
+        var weakRegex = /^[0-9]{6,16}$|^[a-zA-Z]{6,16}$/; //全是数字或全是字母 6-16个字符
+        if($(this).val().length<6){
+            $(this).parents('.form-bolck').addClass('has-error');
+            $(this).parent().find('#uei_operate_time-error').css({'display':'inline-block','color':'red'});
+            $(this).parent().find('#uei_operate_time-error').html('不能少于6位！');
+            return false;
+        }else if($(this).val().length>16){
+            $(this).parents('.form-bolck').addClass('has-error');
+            $(this).parent().find('#uei_operate_time-error').css({'display':'inline-block','color':'red'});
+            $(this).parent().find('#uei_operate_time-error').html('密码过长！');
+            return false;
+        }else{
+            if (strongRegex.test($(this).val())) {
+                $(this).parents('.form-bolck').removeClass('has-error').addClass('has-success');
+                $(this).parent().find('#uei_operate_time-error').css({'display':'inline-block','color':'green'});
+                $(this).parent().find('#uei_operate_time-error').html('密码强度：强！');
+            } else if (mediumRegex.test($(this).val())) {
+                $(this).parents('.form-bolck').removeClass('has-error').addClass('has-success');
+                $(this).parent().find('#uei_operate_time-error').css({'display':'inline-block','color':'#ff5722b8'});
+                $(this).parent().find('#uei_operate_time-error').html('密码强度：中等！');
+            }else if(weakRegex.test($(this).val())){
+                $(this).parents('.form-bolck').removeClass('has-error').addClass('has-success');
+                $(this).parent().find('#uei_operate_time-error').css({'display':'inline-block','color':'#ff5722b8'});
+                $(this).parent().find('#uei_operate_time-error').html('密码强度：弱！');
+            }else {
+                $(this).parents('.form-bolck').removeClass('has-error').addClass('has-success');
+                $(this).parent().find('#uei_operate_time-error').css({'display':'inline-block','color':'#ff5722b8'});
+                $(this).parent().find('#uei_operate_time-error').html('密码强度：中等！');
+            }
+        }
+    });
+    //  确认密码与密码是否一致判断
+    $('.form_repwd').blur(function () {
+        var pwd = $(this).parents('.input-frame-warp').find('.form_pwd').val();
+        if($(this).val()!=pwd){
+            $(this).parents('.form-bolck').addClass('has-error');
+            $(this).parent().find('#uei_operate_time-error').css('display','inline-block');
+            $(this).parent().find('#uei_operate_time-error').html('两次密码不一致！');
+        }
+    });
+
+    //更改密码
+    function change_pwd() {
+        var forget_name = $.trim($('#forget_name').val());
+        var forget_pwd = $('#forget_pwd').val();
+        var forget_repwd = $('#forget_repwd').val();
+        var forget_check_code = $.trim($('#forget_check_code').val());
+        if(forget_name==''){
+            alert('请输入手机号！');
+        }else if(forget_pwd==''||forget_repwd==''){
+            alert('密码和确认密码不能为空！')
+        }else if(forget_check_code==''){
+            alert('请输入您收到的验证码！')
+        }else{
+            $.ajax({
+                dataType: 'json',
+                url: '/admin/user/forget_pwd.html',
+                data: {'a_name':forget_name,'a_pwd':forget_pwd,'re_pwd':forget_repwd,'check_code':forget_check_code},
+                type:'POST',
+                success:function (d) {
+                    alert(d.msg);
+                    if (d.code == "200") {
+                       setTimeout(function () {
+                           window.location="/login";
+                       },1000)
+                    }else{
+                        alert(d.msg);
+                    }
+                }
+            });
+        }
+    }
+
+    //  注册
+    function registerForm() {
+        var phone = $.trim($('#reg_name').val());
+        var pwd = $('#pwd').val();
+        var a_pwd = $('#reg_pwd').val();
+        var check_code = $.trim($('#check_code').val());
+        for(var i=0;i<$(' input[required]').length;i++){
+            if($('#registerForm input[required]').eq(i).val()==''){
+                $('#registerForm input[required]').eq(i).parents('.form-bolck').addClass('has-error');
+                $('#registerForm input[required]').eq(i).parent().find('#uei_operate_time-error').css('display','inline-block');
+            }else{
+                $('#registerForm input[required]').eq(i).parents('.form-bolck').removeClass('has-error').addClass('has-success');
+                $('#registerForm input[required]').eq(i).parent().find('#uei_operate_time-error').css('display','none');
+            }
+        }
+        if(phone==''){
+            alert('请填入您的手机号！');
+            return false;
+        }else if(phone.length!=11){
+            alert('手机号有误!');
+            return false;
+        }else if($('#registerForm .form_pwd').val()==''||$('#registerForm .form_repwd').val()==''){
+            alert('密码和确认密码不能为空！');
+            return false;
+        }else if(check_code == ''){
+            alert('请输入您收到的验证码!');
+            return false;
+        }else if(!$("#registerForm input[type='checkbox']").is(':checked')){
+            alert('请阅读《注册服务协议》!');
+            return false;
+        }else{
+            $.ajax({
+                dataType: 'json',
+                url: '/admin/reg/partner.html',
+                data: {'a_name':phone,'a_pwd':a_pwd,'pwd':pwd,'check_code':check_code},
+                type:'POST',
+                success:function (d) {
+                    alert(d.msg);
+                    if (d.code == "200") {
+                        window.location="/admin/reg/success.html?n="+d.ret;
+                    }
+                }
+            });
+        }
+    }
+
+    function getCheckCode(v,type) {
+        if(type == 1){
+            var phone = $.trim($('#reg_name').val());
+        }else if(type ==2){
+            var phone = $.trim($('#forget_name').val());
+        }
+        var k=60;
+        function time(){
+            k--;
+            if(k<0){
+                v.html('获取验证码');
+                v.removeAttr("disabled").attr({'class':'btn btn-outline btn-primary'});
+                clearInterval(timer);
+            }else {
+                v.html('剩（'+k+'）s');
+                v.attr({"disabled":"disabled",'class':'btn btn-raised btn-primary disabled'});
+            }
+        }
+        var timer=setInterval(time,1000);
+        $.ajax({
+            dataType: 'json',
+            url: '/check_code',
+            data: {'phone':phone,'type':type},
+            type:'POST',
+            success:function (d) {
+                if (d.code == "200") {
+//                    alert(d.msg);
+                }else{
+                    alert(d.msg);
+                    clearInterval(timer);
+                }
+            }
+        });
+    }
+    $.leavePage = function (){
+        window.sessionStorage.clear();
+    };
+</script>
+</body>
+</html>

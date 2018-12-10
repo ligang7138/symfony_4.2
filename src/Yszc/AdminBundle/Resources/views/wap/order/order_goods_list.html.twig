@@ -1,0 +1,43 @@
+<tr class="down_table">
+    <td colspan="12">
+        <div class="panel panel-primary details_table">
+            <div class="panel-heading padding-10">
+                <span>商品列表</span>
+            </div>
+            <div>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr role="row">
+                        <th>
+                            商品种类
+                        </th>
+                        <th>
+                            商品名称
+                        </th>
+                        <th>
+                            商品规格
+                        </th>
+                        <th>
+                            商品购买数量
+                        </th>
+                        <th>
+                            商品总价格
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key,orderGoods in orderGoodsList %}
+                    <tr>
+                        <td>{{ orderGoods.gc_name }}</td>
+                        <td>{{ orderGoods.g_name }}</td>
+                        <td>{{ orderGoods.gn_spec_num }}</td>
+                        <td>{{ orderGoods.order_goods_nums }}</td>
+                        <td>{{ (orderGoods.order_goods_nums*orderGoods.gn_price)|number_format(2, '.', ',') }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </td>
+</tr>

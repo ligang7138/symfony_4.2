@@ -1,0 +1,22 @@
+<div class="panel">
+    <div class="panel-body">
+        <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap">
+            <thead>
+            <tr>
+                <th>操作人</th>
+                <th>操作时间</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key,result in results %}
+                <tr>
+                    <td>{{ result.check_name }}</td>
+                    <td>{{ result.check_time }}</td>
+                    <td>{{ result.check_info }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

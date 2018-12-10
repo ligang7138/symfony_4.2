@@ -1,0 +1,132 @@
+<style>
+    .number_input{
+        width: 100px;
+        display: inline-block;
+        margin: 0 5px;
+    }
+</style>
+<div class="page-container">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">配送信息</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal fv-form fv-form-bootstrap" action="{{ path('admin_shop_distribut') }}" method="post" id="constraintsForm"  onsubmit="fsubmit(this);return false;">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label"><span class="must">*</span> 配送服务：</label>
+                                    <div class="col-md-3 col-sm-8">
+                                        <select data-plugin="select2" name="is_support_distribut" class="" data-rule-required="true" onchange="distributionState()">
+                                            <option value="0" selected>--请选择配送--</option>
+                                            <option {% if partner.isSupportDistribut == 1 %} selected {% endif %} value="1">支持配送</option>
+                                            <option {% if partner.isSupportDistribut == 2 %} selected {% endif %} value="2">不支持配送</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="distributWarp" style="display: none">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label"><span class="must">*</span>配送范围：</label>
+                                        <div class="col-sm-8">
+                                            距离商家地址，方圆<input name="distance" type="text" data-rule-number="true" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.distributDistance }}" placeholder="请输入数值">公里（直线距离）
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label"><span class="must">*</span>配送费：</label>
+                                        <div class="col-sm-8">
+                                            <div class="example-wrap">
+                                                <div class="radio-custom radio-primary">
+                                                    <div class="col-sm-3">
+                                                        <input type="radio"  {% if partner.freeFreight == 2 %} checked="checked" {% endif %} name="free_freight" value="2">
+                                                        <label for="inputUnchecked">免运费</label>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <input type="radio"  {% if partner.freeFreight == 1 %} checked="checked" {% endif %} name="free_freight" value="1">
+                                                        <label for="inputChecked">设置运费</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="freightWrap">
+                                                <div class="margin-bottom-20">最低运费：<input name="lowestFreightDistance" type="text" data-rule-number="true" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.lowestFreightDistance }}" placeholder="请输入数值">公里以内，运费统一为<input name="lowestFreightMoney" type="text" data-rule-number="true" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.lowestFreightMoney }}" placeholder="请输入数值">元</div>
+                                                <div class="margin-bottom-20">附加运费：超过最低运费的距离，每增加<input name="additionFreightDistance" type="text" data-rule-number="true" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.additionFreightDistance }}" placeholder="请输入数值">公里，增加运费<input name="additionFreightMoney" type="text" data-rule-number="true"  data-rule-range="0,10" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.additionFreightMoney }}"  placeholder="请输入数值" >元</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label"><span class="must">*</span>订单起送金额：</label>
+                                        <div class="col-md-3 col-sm-8">
+                                            <input name="sendOutMoney"  type="text" data-rule-number="true" class="form-control" required=""  aria-required="true" placeholder="请输入单笔订单起送金额（数字）" value="{{ partner.sendOutMoney }}" style="display: inline-block;width: 90%;"><span class="padding-left-5">元</span>
+                                            <input id="" name="" type="hidden" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label"><span class="must">*</span>配送时间：</label>
+                                        <div class="col-sm-8 col-md-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">每天<i class="icon wb-time padding-left-5" aria-hidden="true"></i></span>
+                                                <input type="text" class="form-control distribution_time startTime" name="beginDistributTime" required aria-required="true" value="{{ partner.beginDistributTime }}">
+                                                <span class="input-group-addon"> 至 </span>
+                                                <input type="text" class="form-control distribution_time endTime" name="endDistributTime" required aria-required="true" value="{{ partner.endDistributTime }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-sm-offset-3" style="margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary">保存</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //  配送服务状态判断
+    function distributionState() {
+        if( $('select[name="is_support_distribut"]').val() == 1){
+            $('.distributWarp').show();
+        }else{
+            $('.distributWarp').hide();
+        }
+    }
+    distributionState();
+
+    //  配送费
+    function feeState() {
+        if( $('input:radio:checked').val()==1){
+            $('.freightWrap').show();
+        }else{
+            $('.freightWrap').hide();
+        }
+
+    }
+    feeState();
+    $('input[type=radio]').change(function() {
+        feeState();
+    });
+    //  配送时间选择
+    var distributTime = document.querySelectorAll('.distribution_time');
+    var endTime = {theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"},format:"hh:mm:ss",minDate:null};
+    for(var dTime=0;dTime<distributTime.length;dTime++){
+        jeDate(distributTime[dTime],{
+            theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"},format:"hh:mm:ss",
+            donefun:function(obj) {
+                if($(obj.elem).hasClass('startTime')){
+                    var sTime = $(obj.elem).val().substr(0,3)+'00:00';
+                    endTime.minDate = sTime; //开始日选好后，重置结束日的最小日期
+                    endTimes();
+                }
+            },
+        })
+    }
+    function endTimes() {
+        endTime.trigger = false;
+        jeDate('.endTime',endTime)
+    }
+
+</script>

@@ -1,0 +1,54 @@
+<div class="page-container">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body">
+                        <form class="form-horizontal fv-form fv-form-bootstrap" action="/goods/check_goods.html" method="post" id="xlcheckGoodsForm">
+                            <div class="form-group has-feedback">
+                                <label class="col-sm-3 control-label">商品编号：</label>
+                                <div class="col-sm-12 col-md-8 control-text">
+                                    {{ goods_info.gCode }}
+                                    <input type="hidden" name="g_id" value="{{ goods_info.gId }}" />
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <label class="col-sm-3 control-label">商品名称：</label>
+                                <div class="col-sm-12 col-md-8 control-text">
+                                    {{ goods_info.gName }}
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <label class="col-sm-3 control-label">审核意见：</label>
+                                <div class="col-sm-12 col-md-8 form-bolck">
+                                    <div class="example-wrap">
+                                        <div class="radio-custom radio-primary col-sm-4">
+                                            <input type="radio" name="g_check_status" {% if goods_info.gCheckStatus == 1  %}checked{% endif %} value="1">
+                                            <label for="inputUnchecked">通过</label>
+                                        </div>
+                                        <div class="radio-custom radio-primary col-sm-4">
+                                            <input type="radio" name="g_check_status" {% if goods_info.gCheckStatus == 2 %}checked{% endif %} value="2">
+                                            <label for="inputChecked">打回</label>
+                                        </div>
+                                        <div class="radio-custom radio-primary col-sm-4">
+                                            <input type="radio" name="g_check_status" {% if goods_info.gCheckStatus == 3 %}checked{% endif %} value="3">
+                                            <label for="inputChecked">拒绝</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <label class="col-sm-3 control-label">审核反馈：</label>
+                                <div class="col-sm-12 col-md-8 control-text">
+                                    <textarea class="form-control" rows="3" name="g_check_remark" >{{ goods_info.gCheckRemark }}</textarea>
+                                    <p>(商户可以查看审核反馈的内容)</p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

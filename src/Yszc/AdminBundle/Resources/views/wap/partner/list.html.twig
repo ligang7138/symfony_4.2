@@ -1,0 +1,150 @@
+<style>
+    .dataTables_wrapper {
+        padding-bottom: 0;
+    }
+</style>
+
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <div class="pull-left form-inline clearfix" style="min-height: 60px;height: auto;padding: 10px 8px;">
+                        <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                            <div class="input-group">
+                                <input placeholder="请输入商家编号" id="partner_code" class="form-control" value="{{ params.partner_code}}" type="text">
+                            </div>
+                            <div class="input-group">
+                                <input placeholder="请输入手机号" id="phone" class="form-control" value="{{ params.phone}}" type="text">
+                            </div>
+                            <div class="input-group">
+                                <select class="form-control" id="partnerCatagory" name="partnerCatagory">
+                                    <option value="">--请选择商家类型--</option>
+                                    {% for key,v in partnerCatagory %}
+                                        <option {% if params.partnerCatagory == key %} selected="selected" {% endif %} value="{{ key }}">{{ v }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <select class="form-control" id="checkStatus" name="checkStatus">
+                                    <option value="">--请选择审核状态--</option>
+                                    {% for key,v in checkStatus %}
+                                        <option {% if params.checkStatus == key %} selected="selected" {% endif %} value="{{ key }}">{{ v }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <span>
+                                <button type="button" onclick="get{{ tabid }}Page();" class="btn btn-primary"> 搜索</button>
+                                <button type="button" onclick="$('#partner_code').val('');$('#phone').val('');$('#partnerCatagory').val('');$('#checkStatus').val('');" class="btn btn-default">清空</button>
+                            </span>
+                        </div>
+                    </div>
+                    {#<a class="btn btn-outline btn-success" title="新增商户" href="{{ path('admin_partner_add', {'uid': 1}) }}">新增商户</a>#}
+                    <div class="col-sm-12 table-responsive">
+                        <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap">
+                            <thead>
+                            <tr>
+                                <th>商户编号</th>
+                                <th>商户名称</th>
+                                <th>实名类型</th>
+                                <th>证件编号</th>
+                                <th>用户名/手机号</th>
+                                <th>商家类型</th>
+                                <th>服务编号</th>
+                                <th>商户状态</th>
+                                <th>待结算金额(元)</th>
+                                <th>注册时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key,partner in list %}
+                                <tr>
+                                    <td>{{ partner.partner_id }}</td>
+                                    <td>{{ partner.a_true_name }}</td>
+                                    <td>{% if partner.a_partner_type == 1 %}个人{% else %}企业{% endif %}</td>
+                                    <td>{{ partner.a_ident_no }}</td>
+                                    <td>{{ partner.a_name }}</td>
+                                    <td>{{ partner.partner_type | getValueByKey('merchant','MerchantCategory') | default('')}}</td>
+                                    <td>{{ partner.partner_service_code }}</td>
+                                    <td>{{ partner.partner_status | getValueByKey('merchant','MerchantCheckStatus') }}</td>
+                                    <td>{{ partner.wait_pay_amt }}</td>
+                                    <td>{{ partner.a_add_time | format('Y-m-d') }}</td>
+                                    <td>
+                                        {% if partner.partner_status != 0 %}
+                                            {% if partner.partner_status == 5 %}
+                                                <a data-pjax class="btn btn_ btn-outline btn-primary" href="{{ path('admin_partner_detail', {'id': partner.partner_id | default(0) }) }}" target="_blank">查看详情</a>
+                                            {% endif %}
+	                                        {% if partner.partner_status != 4 %}
+                                                <a data-pjax class="btn btn_ btn-outline btn-primary" href="{{ path('admin_partner_edit', {'id': partner.partner_id | default(0) }) }}"  target="_blank">编辑</a>
+		                                        {% if partner.partner_status > 2 %}
+                                                    <a data-pjax class="btn btn_ btn-outline btn-primary" onclick="mopen('{{ path('admin_partner_partnertypeset', {'id': partner.partner_id | default(0) }) }}','商户类型设置',null,['600px', '400px'],editPartnerType);"  target="_blank">商户类型设置</a>
+			                                        {% if partner.partner_type != 1 %}
+                                                        <a data-pjax class="btn btn_ btn-outline btn-primary" onclick="mopen('{{ path('admin_partner_partnercreditset', {'id': partner.partner_id | default(0) }) }}','赊购设置',null,['600px', '400px'],setCredit);"  target="_blank">赊购设置</a>
+			                                        {% endif %}
+		                                        {% endif %}
+	                                        {% endif %}
+                                            {% if partner.partner_status == 2 %}
+                                                <a data-pjax class="btn btn_ btn-outline btn-primary" href="{{ path('admin_partner_checkadmin', {'id': partner.partner_id | default(0) }) }}" target="_blank">审核</a>
+                                            {% endif %}
+                                            <a data-pjax class="btn btn_ btn-outline btn-primary" onclick="mopen('/admin/check/trace_{{ partner.partner_id }}_1.html','审核记录',null,null);"  target="_blank">审核记录</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function get{{ tabid }}Page(nums){
+        nums = (nums>0) ? nums : 1;
+        var partner_code = $('#partner_code').val();
+        var phone = $('#phone').val();
+        var partnerCatagory = $('#partnerCatagory').val();
+        var checkStatus = $('#checkStatus').val();
+        var obj=new Object();
+        obj.partner_code = partner_code;
+        obj.phone = phone;
+        obj.partnerCatagory = partnerCatagory;
+        obj.checkStatus = checkStatus;
+        onPage(nums,window.location.href,obj);
+    }
+    function editPartnerType() {
+        fsubmit($('#editPartnerTypeForm'),function (d) {
+
+            if(d.code == 200){
+                msg(d.msg,null,1);
+                setTimeout(function () {
+                    location.reload();
+                    layer.closeAll();
+                },1000)
+            }else{
+                alert(d.msg)
+            }
+        });
+    }
+
+    function setCredit() {
+        fsubmit($('#editCreditForm'),function (d) {
+            if(d.code == 200){
+                msg(d.msg,null,1);
+                setTimeout(function () {
+                    location.reload();
+                    layer.closeAll();
+                },1000)
+            }else if(d.code == 500){
+                alert(d.msg);
+            }
+        });
+    }
+</script>

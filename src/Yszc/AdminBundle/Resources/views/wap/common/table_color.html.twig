@@ -1,0 +1,74 @@
+<link href="/public/css/plugins/jqgrid/ui.jqgrid.css" rel="stylesheet">
+<script src="/public/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script>
+$(document).ready(function () {
+    $.jgrid.defaults.styleUI = 'Bootstrap';
+    $('tbody tr[{{ tabid }}="row"]').mouseover(function(){
+        $(this).addClass('active');
+    }).mouseout(function(){
+        $(this).removeClass("active");
+    }).click(function(){
+        $(this).toggleClass('success');
+    });
+});
+
+function get{{ tabid }}Page(nums,output){
+    console.log(output);
+    nums = (nums>0) ? nums : 1;
+    var searchData=get{{ tabid }}SearchData();
+    if(output){
+        searchData.output = output;
+        $('.J_iframe').each(function () {
+            if (!$(this).is(":hidden")) {
+               url  = $(this).data('id');
+               var jdata=$.toJSON(searchData);
+               //调用方法 如        
+                post(url, {p :nums,jdata:jdata}); 
+            }
+        });
+        
+
+    }else{
+        onPage(nums,'',searchData);
+    }
+    
+}
+
+function getRepaySche{{ tabid }}Page(nums,output){
+    nums = (nums>0) ? nums : 1;
+    var searchData=get{{ tabid }}SearchData();
+    if(output){
+        searchData.RepaySche = output;
+        $('.J_iframe').each(function () {
+            if (!$(this).is(":hidden")) {
+                url  = $(this).data('id');
+                var jdata=$.toJSON(searchData);
+                //调用方法 如
+                post(url, {p :nums,jdata:jdata});
+            }
+        });
+
+
+    }else{
+        onPage(nums,'',searchData);
+    }
+
+}
+
+function post(URL, PARAMS) {        
+    var temp = document.createElement("form");        
+    temp.action = URL;        
+    temp.method = "post";        
+    temp.style.display = "none";        
+    for (var x in PARAMS) {        
+        var opt = document.createElement("textarea");        
+        opt.name = x;        
+        opt.value = PARAMS[x];        
+        // alert(opt.name)        
+        temp.appendChild(opt);        
+    }        
+    document.body.appendChild(temp);        
+    temp.submit();        
+    return temp;        
+}        
+</script>

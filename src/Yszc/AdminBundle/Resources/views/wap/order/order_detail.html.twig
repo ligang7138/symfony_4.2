@@ -1,0 +1,315 @@
+<style>
+    .del_btn{
+        cursor: pointer;
+    }
+    .checkbox-custom, .radio-custom{
+        margin-top: 0;
+    }
+    .pearl-time-title{
+        font-size: 12px;
+        font-weight: 400;
+        color: #526069b3;
+    }
+    .panel-second-title{
+        border-bottom: 1px solid #aaaaaa59;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        font-size: 17px;
+    }
+</style>
+
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="exampleWizardForm">
+                <div class="panel-body">
+                    <div class="example">
+                        <div class="pearls row">
+                            <div class="pearl col-xs-2 done">
+                                <span class="pearl-number">1</span> <span class="pearl-title">提交订单</span><span class="pearl-title pearl-time-title">{{ order.order_add_time }}</span>
+                            </div>
+                            <div class="pearl col-xs-3 {% if order.order_status in [2,5,6,7,8,10,11,12,13] %} done {% endif %}{% if 3==order.order_status %} current {% else %}disabled{% endif %}">
+                                <span class="pearl-number">2</span> <span class="pearl-title">支付订单</span><span class="pearl-title pearl-time-title">等待支付</span>
+                            </div>
+                            <div class="pearl col-xs-2 {% if order.order_status in [5,6,7,8,10,11,12] %}done{% else %}disabled{% endif %}">
+                                <span class="pearl-number">3</span> <span class="pearl-title">商家发货</span><span class="pearl-title pearl-time-title"></span>
+                            </div>
+                            <div class="pearl col-xs-3 {% if order.order_status in [8,10,11,12]  %}done{% else %}disabled{% endif %}">
+                                <span class="pearl-number">4</span> <span class="pearl-title">确认收货</span><span class="pearl-title pearl-time-title"></span>
+                            </div>
+                            <div class="pearl col-xs-2 {% if order.order_status in [10,11,12]  %}done{% else %}disabled{% endif %}">
+                                <span class="pearl-number">5</span> <span class="pearl-title">订单完成</span><span class="pearl-title pearl-time-title"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal m-t wizard-content" action="" id="addGoodsForm">
+                        <div class="wizard-pane active" id="tab1" role="tabpanel">
+                            <div id="tab1Form" class="form-horizontal m-t">
+                                <div class="form-group">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">订单编号：{{ order.order_no }}</h3>
+                                    </div>
+                                    <div class="padding-20 padding-top-0 clearfix">
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">用户账号:</label>
+                                            <div class="col-sm-8 control-text">{{ order.u_code }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">订单类别:</label>
+                                            <div class="col-sm-8 control-text">{% if 3==order.order_pay_type %}赊购{% else %}全款{% endif %}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">支付方式:</label>
+                                            <div class="col-sm-8 control-text">{{ attribute(admin_bundle.order_pay_type,order.order_pay_type) }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">订单时间:</label>
+                                            <div class="col-sm-8 control-text">{{ order.order_add_time }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">订单备注:</label>
+                                            <div class="col-sm-8 control-text">{{ order.order_remark }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">当前订单状态:</label>
+                                            <div class="col-sm-8 control-text">{{ attribute(admin_bundle.order_status,order.order_status) }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title panel-second-title">
+                                            订单操作
+                                            <span class="pull-right">
+                                                {% if order.order_pay_type in [1,2] %}{% if order.order_status in [3,4] %} <button class="btn btn-primary" type="button" onclick="confirm('确认发货吗？',deliver_goods);">确认发货</button>{% endif %}{% endif %}
+	                                            {% if (order.order_pay_type in [1,2] and order.order_status==2) or (3==order.order_pay_type and order.order_status==0) %} <button class="btn btn-primary" type="button" onclick="mopen('/order/modify/{{ order.order_id }}.html','修改费用信息',null,['500px','380px'],omodifyPrice)">修改费用信息</button>{% endif %}
+                                                {#{% if order.order_status in [7,8,9] %}<button class="btn btn-primary" type="button" onclick="confirm('确认关闭订单吗？',close_order);">关闭订单</button>{% endif %}#}
+                                                <button class="btn btn-primary" type="button" onclick="mopen('/order/remark/{{ order.order_id }}.html','备注订单',null,['500px', '300px'],addremark);">备注订单</button>
+                                                {% if order.order_pay_type in [1,2] and 2>=order.order_status %}<button class="btn btn-primary" type="button" onclick="confirm('确认取消订单吗？',cancle_order);">取消订单</button>{% endif %}
+                                            </span>
+                                        </h3>
+                                        <h3 class="panel-title panel-second-title">收货信息</h3>
+                                    </div>
+                                    <div class="padding-20 padding-top-0 clearfix">
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">收货人:</label>
+                                            <div class="col-sm-8 control-text">{{ order.consignee }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">收货电话:</label>
+                                            <div class="col-sm-8 control-text">{{ order.consignee_mbl }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">收货地址:</label>
+                                            <div class="col-sm-8 control-text">{{ order.order_delivery_addr }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title panel-second-title">购买商品信息</h3>
+                                    </div>
+                                    <div class="padding-20 padding-top-0 clearfix">
+                                        <table class="table table-bordered table-hover dataTable table-striped width-full table_add Specifications_list">
+                                            <thead>
+                                            <tr>
+                                                <th>商品种类</th>
+                                                <th>商品名称</th>
+                                                <th>单价</th>
+                                                <th>规格</th>
+                                                <th>数量</th>
+                                                <th>小计</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% set goods_total = 0 %}
+                                            {% for key,goods in goodsList %}
+                                            <tr>
+                                                <td>{{ goods.gc_name }}</td>
+                                                <td>{{ goods.g_name }}</td>
+                                                <td>{{ goods.gn_price }}</td>
+                                                <td>{{ goods.gn_spec_num|replace({'/':''}) }}/件</td>
+                                                <td>{{ goods.order_goods_nums }}</td>
+                                                <td>{{ (goods.order_goods_nums*goods.gn_price)|number_format(2, '.', ',') }}</td>
+                                            </tr>
+                                            {% set goods_total = goods_total + goods.order_goods_nums*goods.gn_price %}
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        <div class="panel-title text-right" style="font-size: 16px;">商品合计：<i class="fa fa-cny"></i>{{ goods_total|number_format(2, '.', ',') }}</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title panel-second-title">费用信息：</h3>
+                                    </div>
+                                    <div class="padding-20 padding-top-0 clearfix">
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">运费:</label>
+                                            <div class="col-sm-8 control-text"><i class="fa fa-cny"></i>{{ order.order_delivery_fee|number_format(2, '.', ',') }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">满减活动优惠:</label>
+                                            <div class="col-sm-8 control-text"><i class="fa fa-cny"></i>{{ order.buy_up_amount|number_format(2, '.', ',') }}</div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">订单总金额:</label>
+                                            <div class="col-sm-8 control-text"><i class="fa fa-cny"></i>{{ order.order_amount|number_format(2, '.', ',') }} &nbsp;<span class="text-warning" style="color: #f2a654;"><i class="fa fa-info-circle"></i>包含【商品总额+运费-优惠额】</span></div>
+                                        </div>
+                                        <div class="form-bolck col-sm-6 padding-bottom-20">
+                                            <label class="col-sm-4 control-label text-right">实际付款金额:</label>
+                                            <div class="col-sm-8 control-text"><i class="fa fa-cny"></i>{{ order.order_fat_pay_amount|number_format(2, '.', ',') }} &nbsp;<span class="text-warning" style="color: #f2a654;"><i class="fa fa-info-circle"></i>包含【订单总额<i class="fa fa-cny"></i>{{ order.order_amount|number_format(2, '.', ',') }}-减免额<i class="fa fa-cny"></i>{{ (order.order_amount-order.order_fat_pay_amount)|number_format(2, '.', ',') }}】</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title panel-second-title">操作信息</h3>
+                                    </div>
+                                    <div class="padding-20 padding-top-0 clearfix table-responsive">
+                                        <table class="table table-bordered table-hover dataTable table-striped width-full table_add Specifications_list">
+                                            <thead>
+                                            <tr>
+                                                <th>操作人</th>
+                                                <th style="min-width: 130px">操作时间</th>
+                                                <th style="min-width: 130px">订单状态（操作后）</th>
+                                                <th>备注</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for k,log in logList %}
+                                            <tr>
+                                                <td>{{ log.logAdminName }}</td>
+                                                <td>{{ log.logAddTime|date('Y-m-d H:i:s') }}</td>
+                                                <td>{{ attribute(admin_bundle.order_status,log.currStatus) }}</td>
+                                                <td>{{ log.logRemark }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wizard-pane" id="tab2" role="tabpanel">
+                            <div id="tab2Form">支付订单</div>
+                        </div>
+                        <div class="wizard-pane" id="tab3" role="tabpanel">
+                            <div id="tab3Form">商家发货</div>
+                        </div>
+                        <div class="wizard-pane" id="tab4" role="tabpanel">
+                            <div id="tab4Form">确认收货</div>
+                        </div>
+                        <div class="wizard-pane" id="tab5" role="tabpanel">
+                            <div id="tab5Form">订单完成</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //取消订单
+    function cancle_order(){
+        if(!stopFresh()){
+            return false;
+        }
+        fajax('/order/cancle/{{ order.order_id }}.html',null,'POST','JSON',function (d) {
+            if(301==d.code){
+                window.location='/login';
+            }else{
+                if(200==d.code){
+                    msg(d.msg);
+                }else{
+                    msg(d.msg,null,2);
+                }
+            }
+            location.reload();
+        });
+    }
+
+    //关闭订单
+    function close_order(){
+        if(!stopFresh()){
+            return false;
+        }
+        fajax('/order/close/{{ order.order_id }}.html',null,'POST','JSON',function (d) {
+            if(301==d.code){
+                window.location='/login';
+            }else{
+                if(200==d.code){
+                    msg(d.msg);
+                }else{
+                    msg(d.msg,null,2);
+                }
+            }
+            location.reload();
+        });
+    }
+
+    //确认发货
+    function deliver_goods(){
+        if(!stopFresh()){
+            return false;
+        }
+        fajax('/order/deliver_goods/{{ order.order_id }}.html',null,'POST','JSON',function (d) {
+            if(301==d.code){
+                window.location='/login';
+            }else{
+                if(200==d.code){
+                    msg(d.msg);
+                }else{
+                    msg(d.msg,null,2);
+                }
+                location.reload();
+            }
+        });
+    }
+
+    //  二次确认方法
+    function reconfirm(formId){
+        confirm('确认执行此操作？',function () {
+            fsubmit(formId, function (d) {
+                if (d.code == 200) {
+                    location.reload();
+                    layer.closeAll();
+                }
+            });
+        });
+    }
+
+    //修改费用
+    function omodifyPrice() {
+        if(!stopFresh()){
+            return false;
+        }
+        var derate_amt = $('input[name="derate_amt"]').val();
+        if(derate_amt<=0){
+            alert('优惠金额必须大于0！');
+        }else{
+            fsubmit($('#orderUpdateForm'),function (d) {
+                if(d.code==200){
+                    location.reload();
+                    layer.closeAll();
+                }else{
+                    alert(d.msg);
+                }
+            });
+        }
+    }
+
+    //添加备注
+    function addremark(){
+        if(!stopFresh()){
+            return false;
+        }
+        fsubmit($('#remarksOrderForm'), function (d) {
+            if (d.code == 200) {
+                location.reload();
+                layer.closeAll();
+            }
+        });
+    }
+</script>

@@ -1,0 +1,66 @@
+services:
+    kernel.listener.request_listener:
+        class: AdminBundle\EventListener\ExceptionListener
+        calls:
+            - [ setLogger , ['@logger']]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest , priority: 11}
+    kernel.listener.exception_listener:
+        class: AdminBundle\EventListener\ExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+    monolog.processor.session_request:
+        class: AdminBundle\Logger\ApiProcessor
+#        arguments:  ['@session']
+        tags:
+            - { name: monolog.processor, method: processRecord }
+    security.authentication.success_listener:
+        class: AdminBundle\EventListener\LoginListener
+        arguments:  ["@security.http_utils", {},"@service_container"]
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+
+    role_check_listener:
+        class: AdminBundle\EventListener\RoleCheckListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: roleCheck }
+        arguments: ["@application_service","%admin_bundle%","@service_container"]
+
+    admin.twig_extension:
+        class: AdminBundle\Twig\AdminExtension
+        public: false
+        tags:
+            - { name: twig.extension }
+
+    redis_service:
+            class: AdminBundle\DependencyInjection\RedisService
+            arguments: ["@snc_redis.default"]
+
+    application_service:
+        class: AdminBundle\DependencyInjection\AppService
+        arguments: ["@service_container"]
+
+    page_service:
+        class: AdminBundle\DependencyInjection\Page
+        arguments: ["@request_stack","%admin_bundle%"]
+
+    grouptour.security.core.encoder:
+        class: AdminBundle\Security\AdminPasswordEncoder
+        arguments: [6]
+
+    authentication_handler:
+        class: AdminBundle\Security\AuthenticationHandler
+        arguments: ["@request_stack","@doctrine","%admin_bundle%"]
+
+    doctrine.event_subscriber:
+        class: AdminBundle\EventSubscriber\ApiDoctrineSubscriber
+        arguments:  ["@service_container","@redis_service"]
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    shop.event_view_response:
+        class: AdminBundle\EventListener\RespondListener
+        calls:
+            - [ setLogger , ['@logger']]
+        tags:
+            - { name: kernel.event_listener , event: kernel.response, method: onKernelResponse , priority: 8 }

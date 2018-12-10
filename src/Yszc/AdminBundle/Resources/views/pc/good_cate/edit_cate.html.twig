@@ -1,0 +1,249 @@
+<style>
+    #pr_photo_file,#pr_photo_file_del{
+        position: relative;
+        display: inline-block;
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+    #pr_photo_file #pr_photo {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+    #pr_photo_file_del #del_photo {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+    #pr_photo_file:hover,#pr_photo_file_del:hover {
+        background: #AADFFD;
+        border-color: #78C3F3;
+        color: #004974;
+        text-decoration: none;
+    }
+</style>
+<div class="page-container">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <form class="form-horizontal m-t" novalidate="novalidate" id="editGcateForm{{ gcate_info.gcId }}" action="/gcate/edit_gcate/0.html" method="post" onsubmit="fsubmit(this);return false;">
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">分类级别：</label>
+                                    <div class="col-sm-5 col-md-4 control-text">{% if gcOder == 1 %}一级分类{% elseif gcOder == 2 %}二级分类{% else %}三级分类{% endif %}</div>
+                                </div>
+                                {% if gcOder == 1 %}
+                                <div class="form-group has-feedback" {% if add_lower != '' %}style="display: none;" {% endif %}>
+                                    <label class="col-sm-3 control-label">对应金融产品：</label>
+                                    <div class="col-sm-5 col-md-4">
+                                        <select class="form-control" data-plugin="select2" name="p_id" id="p_id">
+                                            <option value="0" selected>--请选择产品--</option>
+                                            {% for pkey,pval in product_info %}
+                                                <option value="{{pval.p_id}}" {% if pval.p_id == gcate_info.pId %} selected {% endif %}>{{pval.p_name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                {% elseif gcOder == 2 %}
+                                    <div class="form-group has-feedback">
+                                        <label class="col-sm-3 control-label">所属分类：</label>
+                                        <div class="col-sm-5 col-md-4 control-text">{{ gcate_upinfo.gcName }}</div>
+                                    </div>
+                                {% elseif gcOder == 3 %}
+                                    <div class="form-group has-feedback">
+                                        <label class="col-sm-3 control-label">所属分类：</label>
+                                        <div class="col-sm-5 col-md-4 control-text">{{ gcate_topinfo.gcName }}>>{{ gcate_upinfo.gcName }}</div>
+                                    </div>
+                                {% endif %}
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">分类名称：</label>
+                                    <div class="col-sm-5 col-md-4">
+                                        <input type="text" class="form-control" maxlength="20" placeholder="请输入分类名称" name="gc_name" value="{{ gcate_info.gcName }}">
+                                        <input type="hidden" name="gc_id" value="{{ gcate_info.gcId }}"/>
+                                        <input type="hidden" name="gc_node" value="{{ gcate_info.gcNode }}"/>
+                                        <input type="hidden" name="gc_order" value="{{ gcOder }}"/>
+                                        <input type="hidden" name="gc_upNode" value="{{ gcate_upinfo.gcId }}"/>
+                                    </div>
+                                </div>
+                                {% if gcOder == 1 %}
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">分类属性：</label>
+                                    <div class="col-sm-5">
+                                        <input type="hidden" id="att_total" name="att_total" value="1"/>
+                                        <button type="button" class="btn btn-primary margin-bottom-10" id="property_add" onclick="addProperty();">添加属性</button>
+                                        <table class="table table-bordered table-striped width-full table_add" id="xxlAtt_list">
+                                            <tbody>
+                                            {% if gc_attribute %}
+                                            {% for ak,av in gc_attribute %}
+                                            <tr>
+                                                <td>属性名称</td>
+                                                <td><input type="text" name="gc_attribute{{ ak+1 }}" value="{{ av }}" class="input_hidden"></td>
+                                                <td><a class="property_del">删除</a></td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% else %}
+                                                <tr>
+                                                    <td>属性名称</td>
+                                                    <td><input type="text" name="gc_attribute1" value="" class="input_hidden"></td>
+                                                    <td><a class="property_del">删除</a></td>
+                                                </tr>
+                                            {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">备注信息：</label>
+                                    <div class="col-sm-5 col-md-4">
+                                        <textarea class="form-control" rows="3" name="gc_remark" placeholder="备注信息">{{ gcate_info.gcRemark }}</textarea><input type="hidden" id="gc_img" name="gc_img" value="{{ gcate_info.gcImg }}">
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">状态：</label>
+                                    <div class="col-sm-5 col-md-4">
+                                        <div class="example-wrap">
+                                            <div class="radio-custom radio-primary">
+                                                <div class="col-sm-6">
+                                                    <input type="radio" id="gc_status" name="gc_status" {% if gcate_info.gcStatus == 1 %}checked{% endif %} value="1" />
+                                                    <label for="inputUnchecked">启用</label>
+                                                </div>
+                                               <div class="col-sm-6">
+                                                   <input type="radio" id="gc_status" name="gc_status" {% if gcate_info.gcStatus == 2 %}checked{% endif %} value="2" />
+                                                   <label for="inputChecked">停用</label>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            {% if gcOder == 1 %}
+                            <form name="pr_photo_form" enctype="multipart/form-data" id="pr_photo_form" method="post">
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label" for="pr_type" style="text-align: right;">分类图片：</label>
+                                    <div class="col-sm-5">
+                                        <a href="javascript:;" id="pr_photo_file">
+                                            <input type="file" accept="image/*" name="file" id="pr_photo" onchange="pr_upload(event);">
+                                            选择图片
+                                        </a>
+                                        <a href="javascript:;" id="pr_photo_file_del">
+                                            <input type="input" {% if gcate_info.gcImg %}{% else %}disabled{% endif %}  name="del_file" id="del_photo" onclick="del_upload();">
+                                            删除图片
+                                        </a>
+                                        <img width="300" height="300" style="display: {% if gcate_info.gcImg %}block{% else %}none{% endif %};" id="pr_photo_src"  src="{{ admin_bundle.fileHost }}{{ gcate_info.gcImg }}"/>
+                                    </div>
+                                    <label class="col-sm-8 control-text col-sm-offset-3"><span style="font-size: 13px;font-weight: 500;">图片上传要求：单张图片小于10M，此处只能添加一张图片；图片格式支持JPG、JPEG、PNG格式。</span></label>
+                                </div>
+                            </form>
+                            {% endif %}
+                            <div class="form-group has-feedback">
+                                <div class="col-sm-4 col-sm-offset-5 margin-top-50">
+                                    <button class="btn btn-primary" type="button" onclick="intopiece_submit();">保存</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        //属性
+        var att_total = '{{ att_total }}';
+        if(att_total > 0){
+            $('#att_total').val(att_total);
+        }else{
+            $('#att_total').val('1');
+        }
+    });
+    //  点击添加属性
+    function addProperty(){
+        var existing_goods_num = $('#att_total').val();
+        var newNum = Number(existing_goods_num) + 1;
+        var nameNum = 'gc_attribute' + newNum;
+        $('#att_total').val(newNum);
+        var propertyContent = '<tr>'
+            + '<td>属性名称</td>'
+            + '<td><input type="text" name="'+nameNum+'" class="input_hidden" value="" ></td>'
+            + '<td> <a class="property_del">删除</a></td>'
+            + '</tr>';
+        $("#xxlAtt_list tbody:last").append(propertyContent);
+    }
+    //    点击删除tr
+    $('.table_add').delegate('.property_del', 'click', function(){
+        $(this).parents('tr').remove();
+        //$('#att_total').val(Number($('#att_total').val())-1);
+    });
+
+    function pr_upload(e) {
+        if(!/.+\.(jpg|jpeg|gif|png)/.test($("#pr_photo").val())){
+            alert('图片格式不正确，请选择正确的图片!');
+        }else{
+            var reader = new FileReader();
+            var file = e.target.files[0];
+            var size = file.size;//字节
+            var max_size = 10*1024*1024;// 10M
+            if(size > max_size){
+                alert('<font color="red">图片大小不能超过10M</font>');return;
+            }
+            $('form[name="pr_photo_form"]').ajaxSubmit({
+                url:"{{ admin_bundle.uploadFileUrl }}",
+                headers:{'Authorization':hex_md5(data_str)},
+                beforeSubmit:function(a,b,c){
+                    backOff(true);
+                },
+                success:function(data){
+                    msg(data.msg);
+                    if(2000 == data.status){
+                        $("#pr_photo_src").attr("src", '{{ admin_bundle.fileHost }}'+data.result.url);
+                        $("#pr_photo_src").css("display",'block');
+                        $('#gc_img').val(data.result.url);
+                        $("#pr_photo_src").show();
+                        $('#del_photo').removeAttr('disabled')
+                    }
+                    backOff(false);
+                },
+                error : function(result) {
+                    console.log(result);
+                    msg('上传失败!');
+                    backOff(false);
+                },
+                resetForm:true,
+                dataType:'json'
+            });
+            return false;
+        }
+    }
+    function del_upload(){
+        alert('删除成功');
+        $('#del_photo').attr('disabled','disabled')
+        $('#gc_img').val('');
+        $("#pr_photo_src").attr("src",'');
+        $("#pr_photo_src").css("display",'none');
+    }
+    function intopiece_submit(){
+        fsubmit($("#editGcateForm{{ gcate_info.gcId }}"),function(data){
+            alert(data.msg);
+            if(data.code == 200) {
+                close_tab();
+                window.location.href = data.openUrl;
+            }
+        });
+    }
+</script>

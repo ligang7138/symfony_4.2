@@ -1,0 +1,25 @@
+parameters:
+    NOT_FOUND_LOAN_CHECK_RESULT: 未获取到批款结果!
+    NOT_FOUND_FINAL_CHECK_RESULT: 未找到终审结果!
+    NOT_FOUND_RELEASE_FUND: 未找到上标审批结果!
+    PRODUCT_NO_EXIST: 产品信息不存在!
+    #后台用户权限
+    admin_roles:
+        re_check : { 15 : 复审人员}
+        re_check_allot : { 14 : 复审分配管理员}
+        last_check : { 16 : 终审人员}
+        apply_in : { 17 : 进件}
+        last_check_allot : { 14 : 终审分配管理员}
+    #客户类型
+    user_type:
+        person : { 0 : 个人 }
+        company : { 1 : 企业 }
+    #审核类型
+    check_type :
+        re_check : { 2 : 复审 }
+        last_check : { 3 : 终审 }
+    #审核状态
+    check_status:
+        check_pass : { 1 : 审核通过 }
+        check_backspace : { 2 : 审核回退 }
+        check_refuse : { 3 : 审核拒绝 }

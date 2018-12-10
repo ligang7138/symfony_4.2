@@ -1,0 +1,48 @@
+# Define your clients here. The example below connects to database 0 of the default Redis server.
+#
+# See https://github.com/snc/SncRedisBundle/blob/master/Resources/doc/index.md for instructions on
+# how to configure the bundle.
+#
+#        default:
+#            type: predis
+#            alias: default
+#            dsn: "%env(REDIS_URL)%"
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: "%redis_master_host%"
+            logging: "%kernel.debug%"
+            options:
+                profile: 3.2
+        cache:
+            type: predis
+            alias: cache
+            dsn: "%redis_master_host%"
+            logging: true
+            options:
+                profile: 3.2
+                connection_timeout: 10
+                read_write_timeout: 30
+        session:
+            type: predis
+            alias: session
+            dsn: "%redis_master_host%"
+        cluster:
+            type: predis
+            alias: cluster
+            dsn:
+            - "%redis_cluster_host%"
+            #                - redis://localhost/3?weight=10
+            #                - redis://localhost/4?weight=5
+            #                - redis://localhost/5?weight=1
+            options:
+                profile: 3.2
+                connection_timeout: 10
+                connection_persistent: true
+                read_write_timeout: 30
+                iterable_multibulk: false
+                throw_errors: true
+                cluster: Snc\RedisBundle\Client\Predis\Connection\PredisCluster
+                replication: false

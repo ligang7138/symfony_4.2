@@ -1,0 +1,36 @@
+<link href="/public/css/plugins/iCheck/custom.css" rel="stylesheet">
+<div class="wrapper wrapper-content fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ">
+                <div class="ibox-content">
+                    <form id="set_role_from" class="form-horizontal m-t-md" action="{{ path('admin_admin_setuserroleform') }}" method="post" onsubmit="fsubmit(this);return false;">
+                        <input  name="a_id" type="hidden" value="{{ a_id }}">
+                        <div class="form-group">
+                            <div class="col-sm-13">
+                            {% for key,role in roles_list %}
+                                    <label class="checkbox-inline i-checks"><input  name="r_roleId[]" type="checkbox" value="{{ role.rId }}" {% if role.rId|inarray(user.aRoles) %} checked{% endif %}> {{ role.rName }}</label>
+                                    {% if loop.index==5 %}
+                                        <br/>
+                                    {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- iCheck -->
+<script src="/public/js/plugins/iCheck/icheck.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('.i-checks').iCheck({
+      checkboxClass: 'icheckbox_square-green'
+    });
+});
+
+</script>

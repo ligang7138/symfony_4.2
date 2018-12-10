@@ -1,0 +1,29 @@
+    <div class="row">
+        <div class="col-sm-12">
+                <div class="ibox-content">
+                    <div class="page-container">
+                        <div id="uploader" class="wu-example">
+                            <div class="queueList">
+                                <div id="dndArea" class="placeholder">
+                                    <div id="filePicker"></div>
+                                    <p style="color: red">要求单次最多上传10张图片</p>
+                                </div>
+                            </div>
+                            <div class="statusBar" style="display:none;">
+                                <div class="progress">
+                                    <span class="text">0%</span> <span class="percentage"></span>
+                                </div>
+                                <div class="info"></div>
+                                <div class="btns">
+                                    <div id="filePicker2"></div>
+                                    <div class="uploadBtn">开始上传</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<script src="{{ '/public/js/md5.js' }}"></script>
+<script>data_str='{{ "now"|date("Y-m-d") }}';var upload_host='{{ admin_bundle.uploadFileUrl }}';</script>
+<script id="up_js" src="{{ '/public/plugins/webuploader/webUpload.js'|gfut }}"></script>

@@ -1,0 +1,63 @@
+<div class="page-container">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">帐号添加或修改</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal fv-form fv-form-bootstrap" action="/admin/user/0.html" method="post" id="constraintsForm"  onsubmit="fsubmit(this);return false;">
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">用户名</label>
+                                    <div class="col-md-3 col-sm-8">
+                                        <input name="a_name"  type="text" class="form-control" required=""  aria-required="true" placeholder="用户名必填" value="{{ user.aName }}">
+                                        <input id="mid" name="a_id" type="hidden" value="{{ a_id }}">
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">密码</label>
+                                    <div class="col-md-3 col-sm-8">
+                                        <input name="a_pwd" type="text" class="form-control" {% if a_id<1 %}required="" placeholder="密码不能为空""{% endif %} >
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">邮箱</label>
+                                    <div class="col-md-3 col-sm-8">
+                                        <fieldset>
+                                            <div class="row row-lg">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input id="inlineRadio1" value="1" name="a_status" {% if user.aStatus == 1 %} checked {% endif %} type="radio">
+                                                        <label for="inlineRadio1">激活</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input id="inlineRadio2" value="2" name="a_status" {% if user.aStatus == 2 %} checked {% endif %} type="radio">
+                                                        <label for="inlineRadio2">未激活</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-sm-offset-3" style="margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary" id="validateButton">提交</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

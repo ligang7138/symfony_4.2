@@ -1,0 +1,99 @@
+<style>
+    .dataTables_wrapper {
+        padding-bottom: 0;
+    }
+</style>
+
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <div>
+                        <a class="btn btn-outline btn-primary" title="添加品牌" onclick="editBrand(this,{{ brand.gb_id | default(0) }})">添加品牌</a>
+                    </div>
+                    <div class="pull-left form-inline clearfix" style="min-height: 60px;height: auto;padding: 10px 8px;">
+                        <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
+                            <div class="input-group">
+                                <input placeholder="请输入品牌名称" id="gb_name" class="form-control" value="{{ params.gb_name | default('') }}" type="text">
+                            </div>
+                            <div class="input-group">
+                                <input placeholder="请输入品牌编号" id="gb_code" class="form-control" value="{{ params.gb_code | default('') }}" type="text">
+                            </div>
+                            <span>
+                                <button type="button" onclick="get{{ tabid }}Page();" class="btn btn-primary"> 搜索</button>
+                                <button type="button" onclick="$('#gb_code').val('');$('#gb_name').val('');" class="btn btn-default">清空</button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 table-responsive">
+                        <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap">
+                            <thead>
+                            <tr>
+                                <th>品牌编号</th>
+                                <th>品牌名称</th>
+                                <th>制造商</th>
+                                <th>添加时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if brand_list %}
+                                {% for key,brand in brand_list %}
+                                    <tr>
+                                        <td>{{ brand.gb_code }}</td>
+                                        <td>{{ brand.gb_name }}</td>
+                                        <td>{{ brand.gb_maker }}</td>
+                                        <td>{{ brand.gb_add_time|date("Y-m-d") }}</td>
+                                        <td>{{ brand.gb_status==1 ? '启用' : '停用'}}</td>
+                                        <td>
+                                            {#{% if 'Goods_gBrandList' in action  or 'all' in action %} #}
+                                            <a data-pjax class="btn btn-outline btn-primary" onclick="editBrand(this,{{ brand.gb_id }})">编辑</a>
+                                            {#{% endif %}#}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td align="center" colspan="5"><font color="red">暂无数据!</font></td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function get{{ tabid }}Page(nums){
+        nums = (nums>0) ? nums : 1;
+        var gb_name=$('#gb_name').val();
+        var gb_code=$('#gb_code').val();
+        var obj = new Object();
+        obj.gb_name=gb_name;
+        obj.gb_code=gb_code;
+        onPage(nums,window.location.href,obj);
+    }
+
+    function editBrand(_this,gb_id) {
+        $(_this).attr('data-chosse','true');
+        var url = "/goods/edit_brand.html?gb_id="+gb_id;
+        mopen(url, '编辑品牌', '',['500px','300px'], function (e, d) {
+            fsubmit($("#editBrandForm"), optUpdateBrandForm);
+        });
+    }
+    function optUpdateBrandForm(data) {
+        alert(data.msg);
+        if (data.code == "200") {
+            $.pjax({url: '/goods/brand_list.html', container: '#admui-pageContent'});
+        }
+    }
+</script>

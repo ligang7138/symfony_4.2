@@ -1,0 +1,110 @@
+<div>
+	<ul class="site-menu">
+		<!-- 二级菜单 -->
+		<li class="site-menu-category">商户信息</li>
+		<!-- 三级菜单 -->
+		<li class="site-menu-item has-sub active">
+			<a href="javascript:;"><i class="site-menu-icon fa-key" aria-hidden="true"></i><span class="site-menu-title">商户认证</span><span class="site-menu-arrow"></span></a>
+			<ul class="site-menu-sub">
+				<!-- 四级菜单 -->
+				<li class="site-menu-item">
+					<a data-pjax href="{{ path('admin_partner_authentication') }}" target="_blank">
+						<span class="site-menu-title">实名认证</span>
+					</a>
+				</li>
+				<li class="site-menu-item">
+					<a data-pjax href="{{ path('admin_partner_check') }}" target="_blank">
+						<span class="site-menu-title">商户审核</span>
+					</a>
+				</li>
+				<!-- 四级菜单 -->
+			</ul>
+		</li>
+		{% if partner.partnerStatus == 5  %}
+			<li class="site-menu-item has-sub">
+				<a href="javascript:;">
+					<i class="site-menu-icon fa-laptop" aria-hidden="true"></i><span class="site-menu-title">店铺管理</span><span class="site-menu-arrow"></span>
+				</a>
+				<ul class="site-menu-sub">
+					<!-- 四级菜单 -->
+					<li class="site-menu-item">
+						<a data-pjax href="{{ path('admin_shop_create') }}" target="_blank">
+							<span class="site-menu-title">创建店铺</span>
+						</a>
+					</li>
+					<li class="site-menu-item">
+						<a data-pjax href="{{ path('admin_shop_setup') }}" target="_blank">
+							<span class="site-menu-title">店铺设置</span>
+						</a>
+					</li>
+					{#<li class="site-menu-item ">
+						<a data-pjax href="{{ path('admin_shop_distribut') }}" target="_blank">
+							<span class="site-menu-title">配送管理</span>
+						</a>
+					</li>
+					<li class="site-menu-item ">
+						<a data-pjax href="{{ path('admin_shop_coupon') }}" target="_blank">
+							<span class="site-menu-title">优惠活动</span>
+						</a>
+					</li>#}
+					<!-- 四级菜单 -->
+				</ul>
+			</li>
+			<li class="site-menu-item  has-sub">
+				<a href="javascript:;">
+					<i class="site-menu-icon fa-product-hunt" aria-hidden="true"></i><span class="site-menu-title">商品管理</span><span class="site-menu-arrow"></span></a>
+				<ul class="site-menu-sub">
+					<!-- 四级菜单 -->
+					<li class="site-menu-item">
+						<a data-pjax href="/goods/goods_list.html" target="_blank">
+							<span class="site-menu-title">商品列表</span>
+						</a>
+					</li>
+					<!-- 四级菜单 -->
+				</ul>
+			</li>
+			<li class="site-menu-item has-sub">
+				<a href="javascript:;">
+					<i class="site-menu-icon fa-file-text-o" aria-hidden="true"></i><span class="site-menu-title">订单管理</span><span class="site-menu-arrow"></span>
+				</a>
+				<ul class="site-menu-sub">
+					<!-- 四级菜单 -->
+					<li class="site-menu-item">
+						<a data-pjax href="/order/list" target="_blank">
+							<span class="site-menu-title">订单列表</span>
+						</a>
+					</li>
+					<!-- 四级菜单 -->
+				</ul>
+			</li>
+			<li class="site-menu-item has-sub">
+				<a  href="javascript:;">
+					<i class="site-menu-icon fa-area-chart" aria-hidden="true"></i><span class="site-menu-title">数据统计</span><span class="site-menu-arrow"></span>
+				</a>
+				<ul class="site-menu-sub">
+					<!-- 四级菜单 -->
+					<li class="site-menu-item">
+						<a data-pjax href="/statis/order_partner.html" target="_blank">
+							<span class="site-menu-title">订单统计</span>
+						</a>
+					</li>
+					<!-- 四级菜单 -->
+				</ul>
+			</li>
+			<li class="site-menu-item has-sub">
+				<a  href="javascript:;">
+					<i class="site-menu-icon fa-database" aria-hidden="true"></i><span class="site-menu-title">资金管理</span><span class="site-menu-arrow"></span>
+				</a>
+				<ul class="site-menu-sub">
+					<!-- 四级菜单 -->
+					<li class="site-menu-item">
+						<a data-pjax href="/partner/cash_list.html" target="_blank">
+							<span class="site-menu-title">交易记录</span>
+						</a>
+					</li>
+					<!-- 四级菜单 -->
+				</ul>
+			</li>
+		{% endif %}
+	</ul>
+</div>

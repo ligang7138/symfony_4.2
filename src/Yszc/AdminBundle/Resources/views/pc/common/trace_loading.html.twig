@@ -1,0 +1,13 @@
+<div class="wrapper wrapper-content" id="trace_page">
+    <div style="height:450px;"></div>
+</div>
+<script>
+$(document).ready(function () {
+    setTimeout(function(){
+        fajax('/admin/look_user_trace.html','u_code='+u_code,'post','html',function(d){
+            $('#trace_page').html(d);
+        });
+    },80);
+ });
+</script>
+

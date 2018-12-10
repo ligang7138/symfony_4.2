@@ -1,0 +1,109 @@
+<link href="/public/css/plugins/chosen/chosen.css" rel="stylesheet">
+<div class="wrapper wrapper-content fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ">
+                <div class="ibox-content">
+
+                    <form id="my_form" class="form-horizontal m-t-md"  action="{{ path('admin_admin_eventform') }}" method="post" onsubmit="fsubmit(this);return false;">
+                         <div class="form-group">
+                             <label class="col-sm-3 control-label">所属模块：</label>
+                            <div class="col-sm-4">
+                                <select id="models" data-placeholder="选择所属模块" class="chosen-select" required="" style="width:300px;" tabindex="2">
+                                    <option value="">请选择所属模块</option>
+                                    {% for k,model in model_list %}
+                                        <option value="{{ model.mId }}" {% if event.mId == model.mId %} selected {% endif %}>{{ model.mName }}</option>
+                                     {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                         <div class="form-group">
+                             <label class="col-sm-3 control-label">事件名称：</label>
+                            <div class="col-sm-4">
+                                <input id="e_name" name="e_name" type="text" class="form-control required" minlength="2" value="{{ event.eName }}">
+                                 <input id="eid" name="e_id" type="hidden" value="{{ event.eId }}">
+                                 <input id="e_model_id" name="e_model_id" type="hidden" value="{{ event.mId }}">
+                                 <input name="e_menu_id" id="e_menu_id" type="hidden" value="{{ event.menuId }}">
+                            </div>
+                        </div>
+                         <div class="form-group">
+                             <label class="col-sm-3 control-label">事件编码：</label>
+                            <div class="col-sm-4">
+                                <input id="e_code" name="e_code" minlength="2" type="text" class="form-control required" aria-required="true" value="{{ event.eCode }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">所属菜单：</label>
+                            <div class="col-sm-4">
+                                <select id="model_menu" data-placeholder="选择所属菜单" aria-required="true" class="chosen-select" required="" style="width:300px;" tabindex="1">
+                                    <option value="">请选择所属菜单</option>
+                                    {% for k,menu in menu_list %}
+                                        <option value="{{ menu.menuId }}" {% if event.menuId == menu.menuId %} selected {% endif %}>{{ menu.menuPadding | raw }}{{ menu.menuName }}</option>
+                                     {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 提交按钮 -->
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary" type="submit">保存</button>
+                                <button class="btn btn-white" type="reset">取消</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                                
+ <script src="/public/js/plugins/chosen/chosen.jquery.js"></script>
+<script>
+$(document).ready(function() {
+    $("#models").chosen().change(function(){
+        $('#e_model_id').val($("#models").val());
+
+    });
+    $("#model_menu").chosen().change(function(){
+        $('#e_menu_id').val($("#model_menu").val());
+
+    });
+    function e() {
+        var e = $("body")[0].style;
+    }
+    $("#zoomIn").click(function() {
+        o.cropper("zoom", .1)
+    }),
+    $("#zoomOut").click(function() {
+        o.cropper("zoom", -.1)
+    }),
+    $("#rotateLeft").click(function() {
+        o.cropper("rotate", 45)
+    }),
+    $("#rotateRight").click(function() {
+        o.cropper("rotate", -45)
+    }),
+    $("#setDrag").click(function() {
+        o.cropper("setDragMode", "crop")
+    });
+    e();
+});
+var config = {
+    ".chosen-select": {},
+    ".chosen-select-deselect": {
+        allow_single_deselect: !0
+    },
+    ".chosen-select-no-single": {
+        disable_search_threshold: 10
+    },
+    ".chosen-select-no-results": {
+        no_results_text: "Oops, nothing found!"
+    },
+    ".chosen-select-width": {
+        width: "95%"
+    }
+};
+for (var selector in config) $(selector).chosen(config[selector]);
+</script>

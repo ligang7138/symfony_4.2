@@ -1,0 +1,63 @@
+<style>
+    .dataTables_wrapper {
+        padding-bottom: 0;
+    }
+</style>
+
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap" data-plugin="dataTable" data-paging="false" data-ordering="false" data-searching="false" data-info="false">
+                        <thead>
+                        <tr>
+                            <th>用户编号</th>
+                            <th>用户姓名</th>
+                            <th>注册手机号</th>
+                            <th>证件编号</th>
+                            <th>服务编号</th>
+                            <th>注册时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for key,user in user_list %}
+                            <tr>
+                                <td>{{ user.u_code }}</td>
+                                <td>{{ user.ui_true_name }}</td>
+                                <td>{{ user.u_name }}</td>
+                                <td>{{ user.ui_ident_no }}</td>
+                                <td>{{ user.u_service_code }}</td>
+                                <td>{{ user.u_reg_time }}</td>
+                                <td>{% if user.u_status == 1 %}启用{% else %}停用{% endif %}</td>
+                                <td>
+                                    {% if 'User_showUser' in action  or 'all' in action %}
+                                    <a data-pjax class="btn btn_ btn-outline btn-primary" href="/user/show_user/{{ user.u_code }}.html" target="_blank">查看详情</a>
+                                    {% endif %}
+                                    {% if 'User_editUserInfo' in action  or 'all' in action %}
+                                        <a data-pjax class="btn btn_ btn-outline btn-primary" href="/user/edit_user/{{ user.u_code }}.html" target="_blank">编辑</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function get{{ tabid }}Page(nums){
+        nums = (nums>0) ? nums : 1;
+        var obj = new Object();
+        onPage(nums,window.location.href,obj);
+    }
+</script>

@@ -1,0 +1,50 @@
+<div>
+	<ul class="site-menu">
+		<!-- 三级菜单 -->
+		<li class="site-menu-category">运营&管理</li>
+		<!-- 三级菜单 -->
+		<li class="site-menu-item has-sub">
+			<a href="javascript:;">
+				<i class="site-menu-icon fa-user" aria-hidden="true"></i><span class="site-menu-title">客户管理</span><span class="site-menu-arrow"></span></a>
+			<ul class="site-menu-sub">
+				<!-- 四级菜单 -->
+				<li class="site-menu-item ">
+					<a data-pjax href="/user/user_list.html" target="_blank">
+						<span class="site-menu-title">客户列表</span>
+					</a>
+				</li>
+				<!-- 四级菜单 -->
+			</ul>
+		</li>
+
+		<li class="site-menu-item has-sub">
+			<a href="javascript:;">
+				<i class="site-menu-icon fa-product-hunt" aria-hidden="true"></i><span class="site-menu-title">运营管理</span><span class="site-menu-arrow"></span></a>
+			<ul class="site-menu-sub">
+				<!-- 四级菜单 -->
+				<li class="site-menu-item ">
+					<a data-pjax href="{{ path('admin_operate_list') }}" target="_blank">
+						<span class="site-menu-title">广告位管理</span>
+					</a>
+				</li>
+				<li class="site-menu-item ">
+					<a data-pjax href="{{ path('admin_operate_msglist') }}" target="_blank">
+						<span class="site-menu-title">消息管理</span>
+					</a>
+				</li>
+				<li class="site-menu-item ">
+					<a data-pjax href="{{ path('admin_operate_applist') }}" target="_blank">
+						<span class="site-menu-title">app发版</span>
+					</a>
+				</li>
+				<li class="site-menu-item ">
+					<a data-pjax href="/feed/feed_list.html" target="_blank">
+						<span class="site-menu-title ">意见反馈</span>
+					</a>
+				</li>
+				<!-- 四级菜单 -->
+			</ul>
+		</li>
+
+	</ul>
+</div>

@@ -1,0 +1,131 @@
+<div class="page-container">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">优惠信息</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal fv-form fv-form-bootstrap" action="{{ path('admin_shop_coupon') }}" method="post" id="partnerCoupon" >
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">满减活动：</label>
+                                    <div class="col-sm-8">
+                                        <button type="button" class="btn btn-outline btn-primary margin-bottom-10" onclick="addActivity()"><i class=" icon wb-plus"></i>添加满减活动</button>
+                                        <table class="table table-bordered table-hover table-striped width-full table_add" id="activity_list">
+                                            <thead>
+                                            <tr>
+                                                <th style="min-width: 73px;">活动编号</th>
+                                                <th>开始时间</th>
+                                                <th>结束时间</th>
+                                                <th>购满/元</th>
+                                                <th>满减优惠/元</th>
+                                                {#<th style="min-width: 73px;">创建时间</th>#}
+                                                <th style="min-width: 45px;">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for k,partnerCoupon in partnerCoupons %}
+                                                    <tr>
+                                                        <td class="loopIndex">{{ loop.index }}</td>
+                                                        <td style="min-width: 170px;"><input type='text' name="start_time[]" class='form-control input_hidden selectData startDate' value='{{ partnerCoupon.PcStartTime.format('Y-m-d H:i:s') }}'></td>
+                                                        <td style="min-width: 170px;"><input type='text' name="end_time[]"  class='form-control input_hidden selectData endDate' value='{{ partnerCoupon.PcEndTime.format('Y-m-d H:i:s') }}'></td>
+                                                        <td><input type="text" data-rule-number="true" name="buy_up[]" class='form-control input_hidden' data-rule-range="0,9999" value='{{ partnerCoupon.PcBuyUp }}'></td>
+                                                        <td><input type="text" data-rule-number="true" name="buy_up_subtraction[]" class='form-control input_hidden' value='{{ partnerCoupon.PcBuyUpSubtraction }}'></td>
+                                                        <input type='hidden' name="ids[]" class='form-control input_hidden' value='{{ partnerCoupon.pcId }}'>
+                                                        {#<td>系统生成</td>#}
+                                                        <td>
+                                                            <a class="delActivity_btn">删除</a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        （用户只能参与一种满减活动；商家可设置阶梯活动；开始时间和结束时间，为活动上线的周期）
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 col-sm-offset-3" style="margin-top: 20px;">
+                                    <button type="button" onclick="partner_submit();" class="btn btn-primary">保存</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // 提交表单
+    function partner_submit(){
+        // confirm('您真的确定要提交进件信息吗？',function(){
+        fsubmit($("#partnerCoupon"),function(data){
+            msg(data.msg,null,(300==data.code) ? 8 : (200==data.code ? 1 : 2));
+            if(data.code == 200){
+                console.log(data);
+            }else{
+                alert(data.msg);
+            }
+        });
+        // },'保存进件信息');
+    }
+    //  一次绑定多个时间选择
+    function dataBind() {
+       nowTime();
+        var jel = document.querySelectorAll(".selectData");
+        for(var j=0;j<jel.length;j++){
+            jeDate(jel[j],{
+                theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"},
+                format: "YYYY-MM-DD hh:mm:ss",
+                minDate: now_date,
+                donefun:function(obj) {
+                    if($(obj.elem).hasClass('startDate')){
+                        var sTime = $(obj.elem).val().substr(0,10);
+                        end.minDate = sTime; //开始日选好后，重置结束日的最小日期
+                        endDates();
+                    }
+                },
+            });
+        }
+        // 这里是日期联动的关键
+        var end={
+            theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"},
+            format: "YYYY-MM-DD hh:mm:ss",
+            isToday:false,
+            minDate: now_date
+        };
+        function endDates() {
+            end.trigger = false;
+            var eDate = document.querySelectorAll('.endDate');
+            for(var e=0;e<eDate.length;e++){
+                jeDate(eDate[e],end)
+            }
+        }
+    }
+    dataBind();
+    //  添加活动
+    function addActivity() {
+        var activity_num = $('.loopIndex').length;
+        var newNum = Number(activity_num) + 1;
+        var atr = "<tr>" +
+            "<td class='loopIndex'>"+ newNum +"</td>" +
+            "<td style='min-width: 170px;'><input type='text' name='start_time[]' class='form-control input_hidden selectData startDate' value=''></td>" +
+            "<td style='min-width: 170px;'><input type='text' name='end_time[]'  class='form-control input_hidden selectData endDate' value=''></td>" +
+            "<td><input type='text' data-rule-number='true' name='buy_up[]' data-rule-range=\"0,9999\" class='form-control input_hidden' value=''></td>" +
+            "<td><input type='text' data-rule-number='true' name='buy_up_subtraction[]' class='form-control input_hidden' value=''></td>" +
+            "<input type='hidden' name='ids[]' class='form-control input_hidden' value=''>" +
+            // "<td>"+ now +"</td>" +
+            "<td><a class='delActivity_btn'>删除</a></td>" +
+            "</tr>";
+        $("#activity_list tbody").append(atr);
+        dataBind();
+    }
+    //  点击删除
+    $('.table_add').delegate('.delActivity_btn', 'click', function(){
+        $(this).parents('tr').remove();
+        for(let i=0;i<$('.loopIndex').length;i++){
+            $('.loopIndex').eq(i).html(i+1);
+        }
+    });
+</script>

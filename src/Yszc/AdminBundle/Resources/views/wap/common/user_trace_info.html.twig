@@ -1,0 +1,227 @@
+<style type="text/css">
+    html{height:100%}
+    body{height:100%;margin:0px;padding:0px}
+    #container{left:0px;width: 100%;height: 100%;margin:0;font-family:"微软雅黑";}
+    .input-date{
+        padding: 10px 20px;
+    }
+    .input-date input{
+        height: 30px;
+    }
+    .input-note{
+        line-height: 30px;
+        font-size: 12px;
+        padding-left: 20px;
+    }
+    .anchorBL{display:none;}
+</style>
+<div class="input-date">
+    <select name="datepicker" id="datepicker" class="chosen-select" style="width: 120px;">
+        {% for d in trace_date %}
+            <option value="{{ d }}">{{ d }}</option>
+        {% endfor %}
+    </select>
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadTrackByTime()">轨迹回放</button>
+    <span id="realTime"></span>
+</div>
+<div id="container">
+    <div style="height: 550px;"></div>
+</div>
+<script type="text/javascript">
+$(document).ready(function () {
+    var config = {
+        '.chosen-select': {},
+        '.chosen-select-deselect': {
+            allow_single_deselect: true
+        },
+        '.chosen-select-no-single': {
+            disable_search_threshold: 10
+        },
+        '.chosen-select-no-results': {
+            no_results_text: 'Oops, nothing found!'
+        },
+        '.chosen-select-width': {
+            width: "95%"
+        }
+    }
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
+    }
+});
+
+    var full_points = {{ trace_data|raw }};
+    //数据准备
+    var points = [];
+
+    var donePoints = [];//已经显示的点。
+    var bPoints = [];//保存百度化的坐标组。用于重设地图的中心点和显示级别。
+    var timerArr=[];//定时器
+    var interval,map;
+    setTimeout(function(){
+        loadJScript();
+    },100);
+
+    function loadJScript() {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "//api.map.baidu.com/api?v=2.0&ak=9SRDt6vS5Uk79joGk90ynXNErurlGcDz&callback=init";
+        document.body.appendChild(script);
+    }
+    function init() {
+        map = new BMap.Map("container");
+        map.centerAndZoom(new BMap.Point(103.388611, 35.563611), 5); //初始显示中国。
+        map.addControl(new BMap.MapTypeControl());
+        map.enableScrollWheelZoom();
+    }
+
+    //根据时间选择。
+    function loadTrackByTime(){
+        map.clearOverlays();
+        for (var t = 0; t < timerArr.length; t++) {
+            clearTimeout(timerArr[t]);
+        };
+        timerArr = [];
+        clearInterval(interval);
+        bPoints.length = 0;
+        donePoints.length = 0;
+        var dateBegin = document.getElementById('datepicker').value;
+        points = full_points[dateBegin];
+        var pointsLen = points.length;
+        var searchRes = [];
+        for (var i = 0; i < pointsLen; i++) {
+            searchRes.push(points[i]);
+        }
+        if(dateBegin.length>5){
+            trackTime(dateBegin);
+        }
+
+        var wait = 400;
+        for (var j = 0; j < searchRes.length; j++) {
+            (function() {
+                var pointAg = [searchRes[j]],timer;//闭包
+                timer = setTimeout(function(){
+                    var doneLen = donePoints.length;
+                    var linePoints = [];
+                    if(doneLen!=0){
+                        linePoints.push(donePoints[doneLen-1]);
+                    }
+                    linePoints.push(pointAg[0]);
+                    donePoints.push(pointAg[0]);
+                    addLine(linePoints); //把原始数据的轨迹线添加到地图上。
+                    addMarker(pointAg);
+                    bPoints.push(new BMap.Point(pointAg[0].lontitude,pointAg[0].latitude));
+                    setZoom(bPoints);
+                },wait);
+                wait = wait>1500 ? 1.2*wait : 2*wait;
+                timerArr.push(timer);
+            })();
+        }
+
+    }
+
+    //设置新的中心点和显示级别
+    function setZoom(bPoints){
+        var view = map.getViewport(eval(bPoints));
+        var mapZoom = view.zoom;
+        var centerPoint = view.center;
+        map.centerAndZoom(centerPoint,mapZoom);
+    }
+
+    function addMarker(points){
+        var pointsLen = points.length;
+        if(pointsLen == 0){
+            return;
+        }
+        var myIcon = new BMap.Icon("/public/img/bigtrack.ico", new BMap.Size(10, 10), {
+            offset: new BMap.Size(10, 10)
+        });
+
+        for(var i = 0;i <pointsLen;i++){
+            var point = new BMap.Point(points[i].lontitude,points[i].latitude);
+            var marker = new BMap.Marker(point, {icon: myIcon});
+            map.addOverlay(marker);
+            (function() {
+                var thePoint = points[i];
+                marker.addEventListener("click",function(){
+                    showInfo(this,thePoint);
+                });
+            })();
+        }
+    }
+
+    //点击轨迹点后显示信息窗口
+    function showInfo(thisMaker,point){
+        var sContent =
+            "<ul style='margin:0 0 5px 0;padding:0.2em 0'>"
+            +"<li style='line-height: 26px;font-size: 15px;'>"
+            +"<span style='width: 50px;display: inline-block;'>地点：</span>" + point.addr + "</li>"
+            +"<li style='line-height: 26px;font-size: 15px;'><span style='width: 50px;display: inline-block;'>时间：</span>"+point.time +"</li>"
+            +"</ul>";
+        var infoWindow = new BMap.InfoWindow(sContent);
+        thisMaker.openInfoWindow(infoWindow);
+    }
+
+    //添加线
+    function addLine(points){
+        var linePoints = [];
+        var pointsLen = points.length;
+        if(pointsLen == 0){
+            return;
+        }
+        for(var i = 0;i <pointsLen;i++){
+            linePoints.push(new BMap.Point(points[i].lontitude,points[i].latitude));
+        }
+        var polyline = new BMap.Polyline(linePoints, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});
+        map.addOverlay(polyline);
+    }
+    //显示轨迹的时间
+    function trackTime(trace_time){
+        var beginTimestamp = Date.parse(new Date(trace_time));
+        document.getElementById('realTime').innerHTML = "回放时间"+getDate(beginTimestamp).time;
+    }
+
+    //根据时间戳（毫秒），返回处理过后的时间。
+    function getDate(ms){
+        var res;
+        if(ms!=undefined){
+            var today = new Date()
+            today.setTime(ms);
+        }else{
+            var today = new Date();
+        }
+
+        var year,month,day,hour,minute,second;
+        year = today.getFullYear();
+        month = today.getMonth() + 1;
+        if(month<10){
+            month = '0'+month;
+        }
+        day = today.getDate();
+        if(day<10){
+            day = '0'+day;
+        }
+        hour = today.getHours();
+        if(hour<10){
+            hour = '0'+hour;
+        }
+        minute = today.getMinutes();
+        if(minute<10){
+            minute = '0'+minute;
+        }
+        second = today.getSeconds();
+        if(second<10){
+            second = '0'+second;
+        }
+        res={
+            'y':year,
+            'M':month,
+            'd':day,
+            'h':hour,
+            "m":minute,
+            "s":second,
+            "time":year+"-"+month+"-"+day+" "+hour+":"+minute+":"+second,
+            "date":year+"-"+month+"-"+day
+        }
+        return res;
+    }
+</script>

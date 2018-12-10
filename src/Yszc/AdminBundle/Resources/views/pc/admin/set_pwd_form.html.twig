@@ -1,0 +1,48 @@
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel-heading">
+                    <h3 class="panel-title">修改密码</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal m-t" id="setPwdForm" action="{{ path('admin_admin_setpwd') }}" method="post" onsubmit="fsubmit(this);return false;" autocomplete="off">
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">用户姓名：</label>
+                            <div class="col-md-5 col-sm-7 control-text">
+                                <b>{{ user.aName }}</b>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-bolck">
+                                <label class="col-sm-5 control-label">原始密码：</label>
+                                <div class="col-md-5 col-sm-7">
+                                    <input id="au_pwd" name="au_pwd" type="password" class="form-control pwd"  data-fv-stringlength="true" data-fv-stringlength-min="6" data-fv-stringlength-message="请输入6个以上的字符" data-fv-notempty="true" data-fv-notempty-message="必填项" placeholder="请输入原始密码" data-fv-notempty="true" data-fv-notempty-message="必填项">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-bolck">
+                                <label class="col-sm-5 control-label">输入新密码：</label>
+                                <div class="col-md-5 col-sm-7">
+                                    <input id="new_pwd" name="new_pwd" type="password" class="form-control pwd" data-fv-stringlength="true" data-fv-stringlength-min="6" data-fv-stringlength-message="请输入6个以上的字符" placeholder="请输入新密码（至少六位）" data-fv-notempty="true" data-fv-notempty-message="必填项" data-fv-identical="true" data-fv-identical-field="reNew_pwd" data-fv-identical-message="两次输入内容不一致">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-bolck">
+                                <label class="col-sm-5 control-label">再次输入新密码：</label>
+                                <div class="col-md-5 col-sm-7">
+                                    <input id="reNew_pwd" name="reNew_pwd" type="password" class="form-control pwd"  data-fv-stringlength="true" data-fv-stringlength-min="6" data-fv-stringlength-message="请输入6个以上的字符" placeholder="请再次确认新密码" data-fv-notempty-message="必填项" data-fv-identical="true" data-fv-identical-field="new_pwd" data-fv-identical-message="两次输入内容不一致">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center col-sm-12" style="margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary" id="validateButton">提交</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

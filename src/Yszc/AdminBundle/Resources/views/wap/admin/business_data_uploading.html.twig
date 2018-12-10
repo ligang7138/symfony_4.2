@@ -1,0 +1,58 @@
+<div class="page-content" id="photo_box">
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">上传资料</h3>
+        </div>
+        <div class="panel-body container-fluid">
+            <form class="form-horizontal fv-form fv-form-bootstrap" action="/admin/user/0.html" method="post" id="constraintsForm"  onsubmit="fsubmit(this);return false;">
+                <div class="form-group has-feedback">
+                    <label class="col-sm-3 control-label">上传证件：</label>
+                    <div class="col-md-9">
+                        <legend class="lt-bar">{{ attribute(admin_bundle.file_type,key) }}</legend>
+                        <div class="form-group file_list">
+                            <div class="gallerys col-sm-offset-1 col-sm-8 filelist_{{ b_id|default(0) }}_{{ key}}">
+                                <div class="file-box">
+                                    <span class="cancel" data-id="{{ d.ud_id }}">删除</span>
+                                    <div class="file">
+                                        <span class="corner"></span>
+                                        <div class="image imgWrap">
+                                            <img alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+                                        </div>
+                                        <div class="file-name">
+                                            {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="file-box" style="width: 140px !important;">
+                                    <div class="file">
+                                        <a href="javascript:void(0);" onclick="mopen('/admin/upload/form.html?b_id={{ b_id|default(0) }}&f_type={{ key }}','资料图片上传',null,['750px','auto']);">
+                                            <span class="corner"></span>
+                                            <div class="image">
+                                                <img alt="image" class="img-responsive center-block" width="100%" src="/public/img/upload.png">
+                                            </div>
+                                            <div class="file-name">
+                                                点击上传图片
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group has-feedback">
+                    <label class="col-sm-3 control-label">其他资料：</label>
+                    <div class="col-md-9"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-body container-fluid">
+                        <div class="col-sm-12 col-sm-offset-3" style="margin: 20px 0;text-align: center;">
+                            <button class="btn btn-primary" style="padding: 8px 26px;font-size:16px;margin-right: 30px">上一步</button>
+                            <button class="btn btn-primary" style="padding: 8px 26px;font-size:16px;margin-right: 30px">提交审核</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
