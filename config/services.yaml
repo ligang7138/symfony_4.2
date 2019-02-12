@@ -17,7 +17,9 @@ services:
 #    App\:
 #        resource: '../src/*'
 #        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
-
+#    App\:
+#        resource: '../src/AdminBundle/Services/*'
+#        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
 #    App\Controller\:
@@ -70,6 +72,11 @@ services:
     redis_service:
         public: true
         class: App\Services\RedisService
+        arguments: ["@snc_redis.default"]
+
+    elastic_service:
+        public: true
+        class: App\Services\ElasticsearchService
         arguments: ["@snc_redis.default"]
 
     # 用来做api接口，cookie失效时间

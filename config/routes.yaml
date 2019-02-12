@@ -1,3 +1,7 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+# 目前没发现有啥用途
+#index-ind:
+#  path: /index/index1
+#  controller: App\Controller\IndexController::index
+#pay:
+#  path: /pay/index
+#  controller: App\PayBundle\Controller\PayController::index1

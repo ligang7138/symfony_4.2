@@ -28,7 +28,6 @@ class PayController extends Controller
 	 * @throws \Exception
 	 */
 	public function indexAction(PayService $pay){
-        echo 'pay';die;
 		$a = Lock::getLockInstance('mysql');
 		$b = Lock::getLockInstance('file');
 		var_dump($a);
@@ -66,6 +65,6 @@ class PayController extends Controller
      * @Route("/test")
      */
 	public function test(){
-	    echo 'pay-test';die;
+        return $this->render("@Pay/pay/index.html.twig",['name' => 33]);
     }
 }
