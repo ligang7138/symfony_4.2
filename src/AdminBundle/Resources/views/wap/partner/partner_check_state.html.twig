@@ -1,0 +1,107 @@
+<style>
+    /*  表单向导完成状态的样式 */
+    .state{
+        display: inline-block;
+        margin: 50px 0 30px;
+        border-radius: 50%;
+        border: 2px solid;
+    }
+    .complete_state{
+        border-color: #00b400;
+        color: #00b400;
+    }
+    .fail_state{
+        border-color: #b41a00;
+        background-color: #b41a00;
+        color: white;
+    }
+    .form-bolck .example-wrap input,.form-bolck .example-wrap select{
+        display: inline-block;
+        width: 90%;
+    }
+</style>
+<div class="page-content" id="photo_box">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="partner_authenticationForm">
+                <div class="panel-heading">
+                    <h3 class="panel-title">商家认证</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="pearls row">
+                        <div class="pearl col-xs-4 done">
+                            <div class="pearl-icon"><i class="icon wb-user" aria-hidden="true"></i></div>
+                            <span class="pearl-title">填写商家资料</span>
+                        </div>
+                        <div class="pearl col-xs-4 done">
+                            <div class="pearl-icon"><i class="icon wb-payment" aria-hidden="true"></i></div>
+                            <span class="pearl-title">上传文件资料</span>
+                        </div>
+                        <div class="pearl col-xs-4 done current">
+                            <div class="pearl-icon"><i class="icon wb-check" aria-hidden="true"></i></div>
+                            <span class="pearl-title">审核状态</span>
+                        </div>
+                    </div>
+                    <div class="wizard-content">
+                        {% if status == 5 %}
+                        {#  审核成功状态 #}
+                            <div class="wizard-pane active partner_check_success" id="exampleGetting" role="tabpanel">
+                                <div class="text-center margin-vertical-20 padding-bottom-60">
+                                    <div class="state complete_state padding-5">
+                                        <i class="icon wb-check font-size-40" aria-hidden="true"></i>
+                                    </div>
+                                    <h4 style="font-size: 18px;font-weight: 600;">恭喜您，您的申请已通过</h4>
+                                    <p style="margin: 30px 0 50px 0;">审核时间：{{ partnerCheck.checkUpdateTime.format('Y-m-d H:i:s') }}</p>
+                                    <a data-pjax class="btn btn-primary ladda-button" href="/shop/create.html" target="_blank">创建店铺</a>
+                                    <a data-pjax class="btn btn-primary ladda-button margin-right-10" href="{{ path('admin_partner_detail', {'id': partner.partnerId | default(0) }) }}" target="_blank">已审核资料</a>
+                                </div>
+                            </div>
+	                        {#  审核成功 显示审核资料查看和操作 按钮 #}
+                        {% elseif status == 2  %}
+                            <div class="wizard-pane active partner_check_success" id="exampleGetting" role="tabpanel">
+                                <div class="text-center margin-vertical-20 padding-bottom-60">
+                                    <div class="state complete_state padding-5">
+                                        <i class="icon wb-check font-size-40" aria-hidden="true"></i>
+                                    </div>
+                                    <h4 style="font-size: 18px;font-weight: 600;">提交成功，审核中，请耐心等待！</h4>
+                                    <p style="margin: 30px 0 50px 0;">说明：审核时间1-3天，请耐心等待。</p>
+                                    <a data-pjax class="btn btn-primary ladda-button margin-right-10" href="{{ path('admin_partner_detail', {'id': partner.partnerId | default(0) }) }}" target="_blank">已审核资料</a>
+
+                                </div>
+                            </div>
+                        {% else %}
+                        {#  审核失败状态 #}
+                          <div class="wizard-pane active partner_check_success" id="exampleGetting" role="tabpanel">
+                              <div class="text-center margin-vertical-20 padding-bottom-60">
+                                  <div class="state fail_state padding-5">
+                                      <i class="icon wb-close font-size-40" aria-hidden="true"></i>
+                                  </div>
+                                  {% if status == 4 %}
+                                  <h4 style="font-size: 18px;font-weight: 600;">很抱歉，您的申请未通过</h4>
+                                  <p style="margin: 30px 0 50px 0;">未通过原因：{{ partnerCheck.checkFeedback }}</p>
+                                  <div class="bottom padding-20 text-center">
+                                      <a data-pjax class="btn btn-primary ladda-button margin-right-10" href="{{ path('admin_partner_detail', {'id': partner.partnerId | default(0) }) }}" target="_blank">已审核资料</a>
+                                  </div>
+                                  {% elseif status == 3 %}
+                                      <h4 style="font-size: 18px;font-weight: 600;">很抱歉，您的申请被打回，请补充资料</h4>
+                                      <p style="margin: 30px 0 50px 0;">打回原因：{{ partnerCheck.checkFeedback }}</p>
+                                      <div class="bottom padding-20 text-center">
+                                          <button class="btn btn-default ladda-button margin-left-10" type="button" onclick="confirm('确定要修改审核资料吗？',function(){openPartnerCheck();})">修改审核资料</button>
+                                      </div>
+                                  {% endif %}
+                                  {#<a data-pjax class="btn btn-primary ladda-button" href="{{ path('admin_partner_check') }}?reset=1" target="_blank">重新认证</a>#}
+                              </div>
+                          </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function openPartnerCheck(){
+        window.location.href = '{{ path('admin_partner_check') }}?reset=1';
+    }
+</script>

@@ -26,26 +26,26 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    kernel.listener.request_listener:
-        class: App\EventListener\ExceptionListener
-        calls:
-            - [ setLogger , ['@logger']]
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest , priority: 11}
+#    kernel.listener.request_listener:
+#        class: App\EventListener\ExceptionListener
+#        calls:
+#            - [ setLogger , ['@logger']]
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest , priority: 11}
 
-    kernel.listener.exception_listener:
-        class: App\EventListener\ExceptionListener
-        calls:
-            - [ setLogger , ['@logger']]
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
-
-    shop.event_view_response:
-        class: App\EventListener\ResponseListener
-        calls:
-            - [ setLogger , ['@logger']]
-        tags:
-            - { name: kernel.event_listener , event: kernel.response, method: onKernelResponse , priority: 8 }
+#    kernel.listener.exception_listener:
+#        class: App\EventListener\ExceptionListener
+#        calls:
+#            - [ setLogger , ['@logger']]
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+#
+#    shop.event_view_response:
+#        class: App\EventListener\ResponseListener
+#        calls:
+#            - [ setLogger , ['@logger']]
+#        tags:
+#            - { name: kernel.event_listener , event: kernel.response, method: onKernelResponse , priority: 8 }
 
     monolog.processor.session_request:
         class: App\Logger\ApiProcessor

@@ -1,0 +1,931 @@
+<style>
+	.chosen-select{
+		width: 100%;
+	}
+	.number_input{
+		width: 100px;
+		display: inline-block;
+		margin: 0 5px;
+	}
+	#pr_photo_file,#pr_photo_file_del{
+		position: relative;
+		display: inline-block;
+		background: #D0EEFF;
+		border: 1px solid #99D3F5;
+		border-radius: 4px;
+		padding: 4px 12px;
+		overflow: hidden;
+		color: #1E88C7;
+		text-decoration: none;
+		text-indent: 0;
+		line-height: 20px;
+	}
+	#pr_photo_file #pr_photo {
+		position: absolute;
+		font-size: 100px;
+		right: 0;
+		top: 0;
+		opacity: 0;
+	}
+	#pr_photo_file_del #del_photo {
+		position: absolute;
+		font-size: 100px;
+		right: 0;
+		top: 0;
+		opacity: 0;
+	}
+	#pr_photo_file:hover,#pr_photo_file_del:hover {
+		background: #AADFFD;
+		border-color: #78C3F3;
+		color: #004974;
+		text-decoration: none;
+	}
+</style>
+<div id="allmap"></div>
+<div class="page-container" id="photo_box">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel">
+	                    <form id="pr_photo_form" method="post">
+		                    <input type="hidden" name="content" id="pr_photo_">
+		                    <input type="hidden" id="ext" name="ext" value="">
+	                    </form>
+	                    <form class="form-horizontal fv-form fv-form-bootstrap" action="{{ path('admin_shop_shopedit', {'id': partner.partnerId | default(0) }) }}" method="post" id="adminShopEditForm"  onsubmit="return false;">
+		                    {#<div class="panel-heading">
+			                    <h3 class="panel-title">商户绑卡</h3>
+		                    </div>
+		                    <div class="panel-body">
+			                    <div class="form-group">
+				                    <label class="col-sm-3 control-label"><span class="must">*</span>商户姓名：</label>
+				                    <div class="col-md-5 col-sm-8 form-bolck">
+					                    <input name="truename" readonly type="text" class="form-control" required="" aria-required="true" maxlength="20" placeholder="请输入姓名" value="{{ adminUser.aTrueName }}">
+				                    </div>
+			                    </div>
+			                    <div class="form-group">
+				                    <label class="col-sm-3 control-label"><span class="must">*</span>身份证号：</label>
+				                    <div class="col-md-5 col-sm-8 form-bolck">
+					                    <input name="ident_no" readonly type="text" class="form-control" required aria-required="true" placeholder="请输入身份证号" value="{{ adminUser.aIdentNo | default('') }}">
+
+				                    </div>
+			                    </div>
+			                    <div class="form-group">
+				                    <label class="col-sm-3 control-label">银行预留手机号：</label>
+				                    <div class="col-md-5 col-sm-8 form-bolck">
+					                    <input name="phone" type="text" class="form-control" placeholder="请输入手机号" value="{% if adminUser.aPhone is not empty %}{{ adminUser.aPhone }}{% else %}{{ registPhone }}{% endif %}">
+				                    </div>
+			                    </div>
+			                    <div class="form-group">
+				                    <label class="col-sm-3 control-label">银行卡号：</label>
+				                    <div class="col-md-5 col-sm-8 form-bolck">
+					                    <input name="card_no" type="text" class="form-control" placeholder="请输入银行卡号" value="{{ adminUser.aCardNo }}">
+				                    </div>
+			                    </div>
+			                    <div class="form-group">
+				                    <label class="col-sm-3 control-label">开户行：</label>
+				                    <div class="col-md-5 col-sm-8 form-bolck">
+					                    <input name="bank_type" type="text" class="form-control" placeholder="请输入开户行" value="{{ adminUser.aOpenBankName }}">
+				                    </div>
+
+			                    </div>
+		                    </div>#}
+	                        <div class="panel-heading">
+	                            <h3 class="panel-title">基础信息</h3>
+	                        </div>
+	                        <div class="panel-body">
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label"><span class="must">*</span>店铺名称：</label>
+	                                    <div class="col-md-5 col-sm-8 form-bolck">
+											<input name="partner_name"  type="text" class="form-control" required="" aria-required="true" maxlength="20" placeholder="名称必填(最多20个字)" value="{{ partner.partnerName }}">
+	                                        <input id="" name="" type="hidden" value="">
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label"><span class="must">*</span>上传店铺头像：</label>
+
+	                                    <div class="col-sm-8 form-bolck">
+		                                    <div class="form-group has-feedback">
+			                                    <div class="col-sm-8">
+				                                    <a href="javascript:;" id="pr_photo_file">
+					                                    <input type="file" accept="image/*" name="file_" id="pr_photo" onchange="pr_upload(event);">
+					                                    选择图片
+				                                    </a>
+													<a href="javascript:;" id="pr_photo_file_del">
+														<input type="input" style="cursor:default;" name="del_file" id="del_photo" onclick="del_upload();" {% if partnerDaturm['b'][0].pd_url == null %}disabled{% else %}{% endif %}>
+														删除图片
+													</a>
+				                                    <img width="300" height="300" style="display:{% if partnerDaturm['b'][0].pd_url == null %}none;{% else %}block;{% endif %}" id="pr_photo_src"  src="{{ admin_bundle.fileHost }}{{ partnerDaturm['b'][0].pd_url }}"/>
+				                                    <input type="hidden" id="headImg" name="headImg" value="{{ partnerDaturm['b'][0].pd_url }}">
+			                                    </div>
+		                                    </div>
+											{#{% if partnerDaturm['b'] is not empty %}
+
+	                                            <div class="gallerys filelist_{{ partner.partnerId | default(0) }}_b">
+													{% for d in partnerDaturm['b'] %}
+
+	                                                    <div class="file-box">
+	                                                        <span class="cancel" data-id="{{ d.id }}" data-type="{{ d.pd_type }}">删除</span>
+	                                                        <div class="file">
+	                                                            <span class="corner"></span>
+	                                                            <div class="image imgWrap">
+	                                                                <img alt="image"  class="gallery-pic active img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.pd_url}}" onclick="openPhotoWin(this)">
+	                                                            </div>
+	                                                            <div class="file-name">
+																	{{ attribute(admin_bundle.file_type,d.pd_type) }}-{{ loop.index }}
+	                                                            </div>
+	                                                        </div>
+	                                                    </div>
+													{% endfor %}
+	                                                <div class="file-box" style="width: 140px !important;">
+	                                                    <div class="file">
+	                                                        <a href="javascript:void(0);" onclick="mopen('/upload/upload.html?p_id={{ partner.partnerId | default(0) }}&f_type=b','资料图片上传',null,['750px','auto']);">
+	                                                            <span class="corner"></span>
+	                                                            <div class="image">
+	                                                                <img alt="image" class="img-responsive center-block" width="100%" src="/public/img/upload.png">
+	                                                            </div>
+	                                                            <div class="file-name">
+	                                                                点击上传图片
+	                                                            </div>
+	                                                        </a>
+	                                                    </div>
+	                                                </div>
+	                                            </div>
+											{% else %}
+	                                            <div class="gallerys filelist_{{ partner.partnerId | default(0) }}_b">
+	                                                <div class="file-box" style="width: 140px !important;">
+	                                                    <div class="file">
+	                                                        <a href="javascript:void(0);" onclick="mopen('/upload/upload.html?p_id={{ partner.partnerId | default(0) }}&f_type=b','资料图片上传',null,['750px','auto']);">
+	                                                            <span class="corner"></span>
+	                                                            <div class="image">
+	                                                                <img alt="image" class="img-responsive center-block" width="100%" src="/public/img/upload.png">
+	                                                            </div>
+	                                                            <div class="file-name">
+                                                                    店铺头像
+	                                                            </div>
+	                                                        </a>
+	                                                    </div>
+	                                                </div>
+	                                            </div>
+											{% endif %}#}
+	                                    </div>
+		                                <label class="col-sm-8 control-text col-sm-offset-3"><span style="font-size: 13px;font-weight: 500;">图片上传要求：单张图片小于10M，此处只能添加一张图片；图片格式支持JPG、JPEG、PNG格式。</span></label>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label"><span class="must">*</span>上传店铺图片：</label>
+	                                    <div class="col-sm-8">
+											{% if partnerDaturm['c'] is not empty %}
+
+	                                            <div class="gallerys filelist_{{ partner.partnerId | default(0) }}_c">
+													{% for d in partnerDaturm['c'] %}
+	                                                    <div class="file-box">
+	                                                        <span class="cancel" data-id="{{ d.id }}" data-type="{{ d.pd_type }}">删除</span>
+	                                                        <div class="file">
+	                                                            <span class="corner"></span>
+	                                                            <div class="image imgWrap">
+	                                                                <img alt="image"  class="gallery-pic active img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.pd_url}}" onclick="openPhotoWin(this)">
+		                                                            <input type="hidden" name="partnerImg[]" value="{{ d.pd_url }}">
+	                                                            </div>
+	                                                            <div class="file-name">
+																	{{ attribute(admin_bundle.file_type,d.pd_type) }}-{{ loop.index }}
+	                                                            </div>
+	                                                        </div>
+	                                                    </div>
+													{% endfor %}
+	                                                <div class="file-box" style="width: 140px !important;">
+	                                                    <div class="file">
+	                                                        <a href="javascript:void(0);" onclick="mopen('/upload/upload.html?p_id={{ partner.partnerId | default(0) }}&f_type=c','资料图片上传',null,['750px','auto']);">
+	                                                            <span class="corner"></span>
+	                                                            <div class="image">
+	                                                                <img alt="image" class="img-responsive center-block" width="100%" src="/public/img/upload.png">
+	                                                            </div>
+	                                                            <div class="file-name">
+	                                                                点击上传图片
+	                                                            </div>
+	                                                        </a>
+	                                                    </div>
+	                                                </div>
+	                                            </div>
+											{% else %}
+	                                            <div class="gallerys filelist_{{ partner.partnerId | default(0) }}_c">
+
+	                                                <div class="file-box" style="width: 140px !important;">
+	                                                    <div class="file">
+	                                                        <a href="javascript:void(0);" onclick="mopen('/upload/upload.html?p_id={{ partner.partnerId | default(0) }}&f_type=c','资料图片上传',null,['750px','auto']);">
+	                                                            <span class="corner"></span>
+	                                                            <div class="image">
+	                                                                <img alt="image" class="img-responsive center-block" width="100%" src="/public/img/upload.png">
+	                                                            </div>
+	                                                            <div class="file-name">
+																	店铺图片
+	                                                            </div>
+	                                                        </a>
+	                                                    </div>
+	                                                </div>
+	                                            </div>
+											{% endif %}
+	                                    </div>
+		                                <label class="col-sm-8 control-text col-sm-offset-3"><span style="font-size: 13px;font-weight: 500;">图片上传要求：单张图片小于10M，此处最多添加3张图片；图片格式支持JPG、JPEG、PNG格式。</span></label>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label"><span class="must">*</span>商家地址：</label>
+	                                    <div class="col-sm-5 form-bolck">
+	                                        <div class="col-sm-4">
+	                                            <select name="provinces" id="provinces" class="chosen-select" data-rule-required="true" required onchange="getCity(this.value)">
+	                                                <option value="">--请选择省--</option>
+													{% for pro in province_lists %}
+	                                                    <option value="{{ pro.city_key }}"
+														        {% if partnerInfo.province == pro.city_key %}selected{% endif %}>{{ pro.city_name }}</option>
+													{% endfor %}
+	                                            </select>
+	                                        </div>
+	                                        <div class="col-sm-4">
+	                                            <select name="city" id="city" class="chosen-select" data-rule-required="true" onchange="getArea(this.value)">
+	                                                <option value="">--请选择市--</option>
+	                                            </select>
+	                                        </div>
+	                                        <div class="col-sm-4">
+	                                            <select name="area" id="county" class="chosen-select" data-rule-required="true">
+	                                                <option value="">--请选择县/区--</option>
+	                                            </select>
+	                                        </div>
+											{#<div class="col-sm-2">
+												<select name="area" id="oarea" class="chosen-select" data-rule-required="true">
+													<option value="">--请选择乡/镇--</option>
+												</select>
+											</div>#}
+	                                    </div>
+
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label"><span class="must">*</span>详细地址：</label>
+	                                    <div class="col-md-5 col-sm-8 form-bolck">
+	                                        <input id="detailAddress" name="detail_address"  type="text" class="form-control"  onblur="getGeo();" placeholder="请输入详细地址" value="{{ partnerInfo.partnerDetailAddress }}" required><span style="color:red;">(根据地理位置系统自动获取定位)</span>
+	                                    </div>
+	                                </div>
+		                        <div id="allmap"></div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label"><span class="must">*</span>位置定位：</label>
+	                                    <div class="col-sm-8 form-bolck">
+	                                        <button class="btn btn-primary margin-right-30" onclick="getGeo();" type="button">重新获取</button>
+	                                        <button class="btn btn-primary margin-right-30" onclick="initMap();" type="button">查看地图</button>
+	                                        <input id="partner_lng" name="partner_lng" type="hidden" class="form-control padding-right-0" value="{{ partner.partnerLng }}" readonly style="display: inline-block;width: 20%;">
+	                                        <input id="partner_lat" name="partner_lat" type="hidden" class="form-control padding-right-0" value="{{ partner.partnerLat }}" readonly style="display: inline-block;width: 20%;">
+											<!--百度地图容器-->
+											<div id="map" style="margin: 20px 0;"></div>
+										</div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label"><span class="must">*</span>商家电话：</label>
+	                                    <div class="col-md-5 col-sm-8 form-bolck">
+	                                        <input name="partner_phone"  type="text" class="form-control" required aria-required="true" placeholder="请输入商家电话" value="{{ partner.partnerPhone | default('') }}">
+
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label">商家简介：</label>
+	                                    <div class="col-md-5 col-sm-8 form-bolck">
+	                                        <textarea class="form-control" id="textareaDefault" name="partner_intro" rows="3" maxlength="30" placeholder="请输入商家简单介绍，最多30个汉字">{{ partner.partnerIntro }}</textarea>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-3 control-label">商家公告：</label>
+	                                    <div class="col-md-5 col-sm-8 form-bolck">
+	                                        <textarea name="partner_notice" class="form-control" id="textareaDefault" rows="3" maxlength="30" placeholder="请输入商家简单介绍，最多30个汉字">{{ partner.partnerNotice }}</textarea>
+	                                    </div>
+	                                </div>
+	                        </div>
+		                    <div class="panel-heading">
+			                    <h3 class="panel-title">配送信息</h3>
+		                    </div>
+		                    <div class="panel-body">
+			                    <div class="form-group">
+				                    <label class="col-sm-3 control-label"><span class="must">*</span> 配送服务：</label>
+				                    <div class="col-md-5 col-sm-8">
+					                    <select data-plugin="select2" name="is_support_distribut" class="" data-rule-required="true" onchange="distributionState()">
+						                    <option value="0" selected>--请选择配送--</option>
+						                    <option {% if partner.isSupportDistribut == 1 %} selected {% endif %} value="1">支持配送</option>
+						                    <option {% if partner.isSupportDistribut == 2 %} selected {% endif %} value="2">不支持配送</option>
+					                    </select>
+				                    </div>
+			                    </div>
+			                    <div class="distributWarp" style="display: none">
+				                    <div class="form-group">
+					                    <label class="col-sm-3 control-label"><span class="must">*</span>配送范围：</label>
+					                    <div class="col-sm-8 form-bolck">
+						                    距离商家地址，方圆<input name="distance" type="text" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.distributDistance }}" placeholder="请输入数值">公里（直线距离）
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+					                    <label class="col-sm-3 control-label"><span class="must">*</span>配送费：</label>
+					                    <div class="col-sm-8 form-bolck">
+						                    <div class="example-wrap">
+							                    <div class="radio-custom radio-primary">
+								                    <div class="col-sm-3">
+									                    <input type="radio"  {% if partner.freeFreight == 2 %} checked="checked" {% endif %} name="free_freight" value="2">
+									                    <label for="inputUnchecked">免运费</label>
+								                    </div>
+								                    <div class="col-sm-3">
+									                    <input type="radio"  {% if partner.freeFreight == 1 %} checked="checked" {% endif %} name="free_freight" value="1">
+									                    <label for="inputChecked">设置运费</label>
+								                    </div>
+							                    </div>
+						                    </div>
+						                    <div class="freightWrap">
+							                    <div class="margin-bottom-20">最低运费：<input name="lowestFreightDistance" type="text" class="form-control padding-right-0 number_input" value="{{ partner.lowestFreightDistance }}" placeholder="请输入数值">公里以内，运费统一为<input name="lowestFreightMoney" type="text" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.lowestFreightMoney }}" placeholder="请输入数值">元</div>
+							                    <div class="margin-bottom-20">附加运费：超过最低运费的距离，每增加<input name="additionFreightDistance" type="text" class="form-control padding-right-0 number_input" value="{{ partner.additionFreightDistance }}" placeholder="请输入数值">公里，增加运费<input name="additionFreightMoney" type="text" class="form-control padding-right-0 number_input" required=""  aria-required="true" value="{{ partner.additionFreightMoney }}"  placeholder="请输入数值" data-rule-number="true" data-rule-range="0,10">元</div>
+						                    </div>
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+					                    <label class="col-sm-3 control-label"><span class="must">*</span>订单起送金额：</label>
+					                    <div class="col-md-5 col-sm-8 form-bolck">
+						                    <input name="sendOutMoney"  type="text" class="form-control" required=""  aria-required="true" placeholder="请输入单笔订单起送金额（数字）" value="{{ partner.sendOutMoney }}" style="display: inline-block;width: 90%;"><span class="padding-left-5">元</span>
+						                    <input id="" name="" type="hidden" value="">
+					                    </div>
+				                    </div>
+				                    <div class="form-group">
+					                    <label class="col-sm-3 control-label"><span class="must">*</span>配送时间：</label>
+					                    <div class="col-sm-8 col-md-4">
+						                    <div class="input-group">
+                                                <span class="input-group-addon">每天<i class="icon wb-time padding-left-5" aria-hidden="true"></i></span>
+							                    <input class="form-control distribution_time startTime" name="beginDistributTime" value="{{ partner.beginDistributTime }}">
+							                    <span class="input-group-addon"> 至 </span>
+							                    <input class="form-control distribution_time endTime" name="endDistributTime" value="{{ partner.endDistributTime }}">
+						                    </div>
+					                    </div>
+				                    </div>
+			                    </div>
+		                    </div>
+							<div class="panel-heading">
+								<h3 class="panel-title">优惠信息</h3>
+							</div>
+							<div class="panel-body">
+							   <div class="form-group">
+									<label class="col-sm-3 control-label">满减活动：</label>
+									<div class="col-sm-8">
+										<button type="button" class="btn btn-outline btn-primary margin-bottom-10" onclick="addActivity()"><i class=" icon wb-plus"></i>添加满减活动</button>
+										<table class="table table-bordered table-hover table-striped width-full table_add" id="activity_list">
+											<thead>
+												<tr>
+													<th style="min-width: 73px;">活动编号</th>
+													<th>开始时间</th>
+													<th>结束时间</th>
+													<th>购满/元</th>
+													<th>满减优惠/元</th>
+                                                    {#<th style="min-width: 73px;">创建时间</th>#}
+													<th style="min-width: 45px;">操作</th>
+												</tr>
+											</thead>
+											<tbody>
+                                                {% for k,partnerCoupon in partnerCoupons %}
+													<tr>
+														<td class="form-bolck" class="loopIndex">{{ loop.index }}</td>
+														<td class="form-bolck" style="min-width: 170px;"><input type='text' name="start_time[]" class='form-control input_hidden selectData startDate' value='{{ partnerCoupon.PcStartTime.format('Y-m-d H:i:s') }}'></td>
+														<td class="form-bolck" style="min-width: 170px;"><input type='text' name="end_time[]" class='form-control input_hidden selectData endDate' value='{{ partnerCoupon.PcEndTime.format('Y-m-d H:i:s') }}'></td>
+														<td class="form-bolck"><input type="text"  name="buy_up[]" class='form-control input_hidden' value='{{ partnerCoupon.PcBuyUp }}' onblur="num_input($(this))"></td>
+														<td class="form-bolck"><input type="text"  name="buy_up_subtraction[]" class='form-control input_hidden buy_up_subtraction' value='{{ partnerCoupon.PcBuyUpSubtraction }}' onblur="num_input($(this),true)"></td>
+														<input type='hidden' name="ids[]" class='form-control input_hidden' value='{{ partnerCoupon.pcId }}'>
+                                                        {#<td>系统生成</td>#}
+														<td>
+															<a class="delActivity_btn">删除</a>
+														</td>
+													</tr>
+                                                {% endfor %}
+											</tbody>
+										</table>
+										（用户只能参与一种满减活动；商家可设置阶梯活动；开始时间和结束时间，为活动上线的周期）
+									</div>
+							   </div>
+								<div class="col-sm-4 col-sm-offset-3" style="margin-top: 20px;">
+									<button type="button" onclick="partner_submit();" class="btn btn-primary">保存</button>
+								</div>
+							</div>
+	                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+//   表单必填
+    $("input[required]").parent().append('<span id="uei_operate_time-error" class="help-block m-b-none" style="display:none;">必填！</span>');
+    $('input[required]').blur(function(){
+        if($(this).val()==''){
+            $(this).parents('.form-bolck').addClass('has-error');
+            $(this).parent().find('#uei_operate_time-error').css('display','inline-block');
+            return false;
+        }else{
+            $(this).parents('.form-bolck').removeClass('has-error').addClass('has-success');
+            $(this).parent().find('#uei_operate_time-error').css('display','none');
+            return true;
+        }
+    });
+//  基础信息部分的方法
+	$(document).ready(function () {
+		// 居住地址初始化地址信息
+		{% if partnerInfo.province %}
+		getCity("{{ partnerInfo.province }}", "{{ partnerInfo.city }}");
+		{% endif %}
+		{% if partnerInfo.city %}
+		getArea("{{ partnerInfo.city }}", "{{ partnerInfo.county }}");
+		{% endif %}
+
+		//  初始化下拉框
+		var config = {
+			".chosen-select": {},
+			".chosen-select-deselect": {
+				allow_single_deselect: !0
+			},
+			".chosen-select-no-single": {
+				disable_search_threshold: 10
+			},
+			".chosen-select-no-results": {
+				no_results_text: "Oops, nothing found!"
+			},
+			".chosen-select-width": {
+				width: "100%"
+			}
+		};
+		for (var selector in config) $(selector).chosen(config[selector]);
+	});
+	// 提交表单
+	function shop_submit(){
+		// confirm('您真的确定要提交进件信息吗？',function(){
+		fsubmit($("#constraintsForm"),function(data){
+			if(data.code == 200){
+				alert(data.msg);
+				// window.location.href = data.openUrl;
+			}else{
+				alert(data.msg);
+			}
+		});
+		// },'保存进件信息');
+	}
+	function getCity(v, select) {
+		fajax("{{ path('admin_city_getcitylist') }}", 'c_id=' + v + '&select=' + select, 'post', 'html', function (data) {
+			data = '<option value="">--请选择市--</option>' + data;
+			$("#city").html(data);
+			$("#city").chosen();
+			$("#city").trigger("chosen:updated");
+		})
+	}
+	function getArea(v, select) {
+		fajax("{{ path('admin_city_getcitylist') }}", 'c_id=' + v + '&select=' + select, 'post', 'html', function (data) {
+			data = '<option value="">--请选择县--</option>' + data;
+			$("#county").html(data);
+			$("#county").chosen();
+			$("#county").trigger("chosen:updated");
+		})
+	}
+	// 删除资料
+	$(".file-box").delegate(".cancel","click",function(){
+        if(!stopFresh()){
+            return false;
+        }
+		obj = new Object();
+		obj.id = $(this).attr('data-id');
+		obj.p_type = $(this).attr('data-type');
+		var that = $(this);
+		fajax('/upload/del.html',obj,'post','json',function(d){
+			if(200 == d.code){
+				that.parent().remove();
+			}else if(201 == d.code){
+				that.parent().remove();
+			}
+			alert(d.msg);
+		});
+	});
+//  基础信息部分的方法结束
+
+    //  配送服务状态判断
+	function distributionState() {
+		if( $('select[name="is_support_distribut"]').val() == 1){
+			$('.distributWarp').show();
+			$('.distributWarp').find('input').attr("disabled", false);
+            $('.distributWarp input[required]').attr('required',true);
+            $('.distributWarp input[required]').attr('aria-required',true);
+		}else{
+			$('.distributWarp').hide();
+            $('.distributWarp').find('input').attr("disabled", true);
+            $('.distributWarp input[required]').attr('required',false);
+            $('.distributWarp input[required]').attr('aria-required',false);
+		}
+	}
+	distributionState();
+	//  配送费
+	function feeState() {
+		if( $('input:radio:checked').val()==1){
+			$('.freightWrap').show();
+		}else{
+			$('.freightWrap').hide();
+		}
+
+	}
+	feeState();
+	$('input[type=radio]').change(function() {
+		feeState();
+	});
+	//配送时间选择
+	var distributTime = document.querySelectorAll('.distribution_time');
+    var endTime = {theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"},format:"hh:mm:ss",minDate:null};
+	for(var dTime=0;dTime<distributTime.length;dTime++) {
+		jeDate(distributTime[dTime], {
+			theme: {bgcolor: "#4e97d9", color: "#ffffff", pnColor: "#00CCFF"}, format: "hh:mm:ss",
+			donefun: function (obj) {
+				if ($(obj.elem).hasClass('startTime')) {
+					var sTime = $(obj.elem).val().substr(0, 3) + '00:00';
+					endTime.minDate = sTime; //开始日选好后，重置结束日的最小日期
+					endTimes();
+				}
+			},
+		});
+	}
+	function endTimes() {
+        endTime.trigger = false;
+        jeDate('.endTime',endTime)
+	}
+	//  数字项判断
+	function numberjudge(v) {
+		v.parent().removeClass('has-success').addClass('has-error');
+		v.parent().find('.help-block').html('请输入正确的数字！').show();
+        if(v.parent().find('.help-block').length > 1){
+			v.parent().find('span.help-block:last').hide();
+		}
+		return false;
+	}
+	//  商家电话判断
+    $('input[name=partner_phone]').blur(function () {
+        if($(this).val()!='' && !/^[0-9]*$/.test($(this).val())){
+            numberjudge($('input[name=partner_phone]'));
+		}
+    });
+	//  配送信息判断
+    $('.number_input').blur(function () {
+        var that=$(this);
+		if(!/^[0-9]\d*\,\d*|[0-9]\d*$/.test($(this).val())){
+            numberjudge(that);
+		}
+    });
+ 	//  订单起送金额判断
+    $('input[name=sendOutMoney]').blur(function () {
+		if($(this).val()!='' && !/^[1-9]\d*\,\d*|[1-9]\d*$/.test($(this).val())){
+            numberjudge($('input[name=sendOutMoney]'));
+		}
+    });
+
+// 提交表单
+	function partner_submit(){
+        cardMsg(1);
+        if($('.file-box').length <= 1){
+            alert('请上传店铺图片');
+            return false;
+		}else if($('.distributWarp').attr('style') == "display: block;"){
+            if($('input[name=partner_phone]').val()==''){
+                numberjudge($('input[name=partner_phone]'));
+                $('input[name=partner_phone]').parent().find('.help-block').html('必填！').show();
+            }else if(!/^[0-9]*$/.test($('input[name=partner_phone]').val())){
+                numberjudge($('input[name=partner_phone]'));
+            }else if($('.number_input').val()==''){
+                numberjudge($('.number_input'));
+                $('.number_input').parent().find('.help-block').html('必填！').show();
+            }else if(!/^[0-9]\d*\,\d*|[0-9]\d*$/.test($('.number_input').val())){
+                numberjudge($('.number_input'));
+            }else if(Number($('input[name=distance]').val())<=0){
+                numberjudge($('input[name=distance]'));
+                $('input[name=distance]').parent().find('.help-block').html('请输入大于0的数字！').show();
+                return false;
+            }else if($('input[name=sendOutMoney]').val()==''){
+                numberjudge($('input[name=sendOutMoney]'));
+                $('input[name=sendOutMoney]').parent().find('.help-block').html('必填！').show();
+            }else if(!/^[1-9]\d*\,\d*|[1-9]\d*$/.test($('input[name=sendOutMoney]').val())){
+                numberjudge($('input[name=sendOutMoney]'))
+            }else {
+                // confirm('您真的确定要提交进件信息吗？',function(){
+                fsubmit($("#adminShopEditForm"),function(data){
+                    msg(data.msg,null,(300==data.code) ? 8 : (200==data.code ? 1 : 2));
+                    if(data.code == 200){
+                        console.log(data);
+                    }else{
+                        alert(data.msg);
+                    }
+                });
+                // },'保存进件信息');
+            }
+		}else {
+            // confirm('您真的确定要提交进件信息吗？',function(){
+            fsubmit($("#adminShopEditForm"),function(data){
+                msg(data.msg,null,(300==data.code) ? 8 : (200==data.code ? 1 : 2));
+                if(data.code == 200){
+                    console.log(data);
+                }else{
+                    alert(data.msg);
+                }
+            });
+            // },'保存进件信息');
+        }
+	}
+
+	//   一次绑定多个时间选择
+	function dataBind() {
+        //   获取当前时间
+        nowTime();
+		var jel = document.querySelectorAll(".selectData");
+        var end={
+            theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"},
+            format: "YYYY-MM-DD hh:mm:ss",
+            isToday:false,
+            minDate: now_date,
+		};
+		for(var j=0;j<jel.length;j++){
+			jeDate(jel[j],{
+                theme:{ bgcolor:"#4e97d9",color:"#ffffff", pnColor:"#00CCFF"},
+				format: "YYYY-MM-DD hh:mm:ss",
+                minDate: now_date,
+                donefun:function(obj) {
+                    if($(obj.elem).hasClass('startDate')){
+                        var sTime = $(obj.elem).val().substr(0,10),eTime = $(obj.elem).parent().next().find('.endDate')[0];
+                        end.minDate = sTime; //开始日选好后，重置结束日的最小日期
+                        endDates(eTime);
+                    }
+                },
+            });
+		}
+        //这里是日期联动的关键
+        function endDates(eDate) {
+            end.trigger = false;
+			jeDate(eDate,end)
+        }
+    }
+    dataBind();
+
+	//  添加减满活动
+	function addActivity() {
+		var activity_num = $('#activity_list tbody tr').length;
+		var newNum = Number(activity_num) + 1;
+        var atr = "<tr>" +
+			"<td class='form-bolck' class='loopIndex'>"+ newNum +"</td>" +
+			"<td class='form-bolck' style='min-width: 170px;'><input type='text' name='start_time[]' class='form-control input_hidden selectData startDate' value=''></td>" +
+			"<td class='form-bolck' style='min-width: 170px;'><input type='text' name='end_time[]'  class='form-control input_hidden selectData endDate' value=''></td>" +
+            "<td><input type='text' name='buy_up[]' class='form-control input_hidden' value='' onblur='num_input($(this))'></td>" +
+			"<td class='form-bolck'><input type='text' name='buy_up_subtraction[]' class='form-control input_hidden buy_up_subtraction' value=''onblur='num_input($(this),true)'></td>" +
+			"<input type='hidden' name='ids[]' class='form-control input_hidden' value=''>" +
+			// "<td>"+ now +"</td>" +
+			"<td><a class='delActivity_btn'>删除</a></td>" +
+			"</tr>";
+		$("#activity_list tbody").append(atr);
+		dataBind();
+	}
+
+	//  点击删除
+	$('.table_add').delegate('.delActivity_btn', 'click', function(){
+		$(this).parents('tr').remove();
+		for(let i=0;i<$('#activity_list tbody tr').length;i++){
+            $('#activity_list tbody tr').eq(i).find('td:first-child').html(i+1);
+		}
+	});
+
+	//  必填数字
+	function num_input(v,n) {
+	   var reg=/\d/gi;
+       if (!reg.test(v.val())) {
+           alert("请输入数字！");
+           return false;
+       }
+        if(n){
+            for(var i=0;i<$("#activity_list .buy_up_subtraction").not(v).length;i++){
+                if(v.val()==$("#activity_list .buy_up_subtraction").not(v).eq(i).val()){
+                    alert('满减金额不能重复！');
+                    return false;
+                }
+            }
+        }
+   }
+
+	//创建和初始化地图函数：
+	function initMap(){
+	    $('#map').css({
+	        "width":"700px",
+	        "height":"550px",
+	        "font-size":"12px"
+	    });
+		map = new BMap.Map("map");
+		var lng = $('#partner_lng').val();
+		var lat = $('#partner_lat').val();
+		map.centerAndZoom(new BMap.Point(lng,lat),15);//创建地图
+
+		var marker = new BMap.Marker(new BMap.Point(lng, lat)); // 创建标注
+		var allOverlay = map.getOverlays();
+
+		if (allOverlay[0] == null) {
+			map.addOverlay(marker);
+		} else {
+			map.removeOverlay(allOverlay[0]);
+			map.clearOverlays();
+			map.addOverlay(marker);
+		}
+		setMapEvent();//设置地图事件
+		addMapControl();//向地图添加控件
+		addMapMarker(map);//向地图添加覆盖物
+	}
+
+	function addMapMarker(map){
+		map.addEventListener("click",function(e) {
+			//通过点击百度地图，可以获取到对应的point, 由point的lng、lat属性就可以获取对应的经度纬度
+			var pt = e.point;
+			var lng = pt.lng;
+			var lat = pt.lat;
+			var marker = new BMap.Marker(new BMap.Point(lng, lat)); // 创建标注
+			var allOverlay = map.getOverlays();
+
+			if (allOverlay[0] == null) {
+				map.addOverlay(marker);
+			} else {
+				map.removeOverlay(allOverlay[0]);
+				map.clearOverlays();
+				map.addOverlay(marker);
+			}
+			// map.removeOverlay(marker);
+			marker.enableDragging(); // 可拖拽
+			var geoc = new BMap.Geocoder();
+			geoc.getLocation(pt, function (rs) {
+				//addressComponents对象可以获取到详细的地址信息
+				var addComp = rs.addressComponents;
+				var site = addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
+
+				// var label = new BMap.Label(site,{offset:new BMap.Size(20,-10)});
+				// marker.setLabel(label);
+
+				//将对应的HTML元素设置值
+				// $("#site").val(site);
+				$("#partner_lng").val(lng);
+				$("#partner_lat").val(lat);
+			});
+		})
+	}
+	//向地图添加控件
+	function addMapControl(){
+		var scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+		scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+		map.addControl(scaleControl);
+		var navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+		map.addControl(navControl);
+		var overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:true});
+		map.addControl(overviewControl);
+	}
+
+	function setMapEvent(){
+		map.enableScrollWheelZoom();
+		map.enableKeyboard();
+		map.enableDragging();
+		map.enableDoubleClickZoom()
+	}
+	function getGeo(){
+	    var detailAddress = $('#detailAddress').val();
+	    var provinces = $('#provinces').val();
+	    var city = $('#city').val();
+	    var county = $('#county').val();
+	    if(provinces == '' || city == '' || county == ''){
+	        alert('商家地址必选');return false;
+	    }
+	    if(detailAddress == ''){
+	        alert('详细地址必填');return false;
+	    }
+		var provinces = $('#provinces').find('option:selected').html();
+		var city = $('#city').find('option:selected').html();
+		var county = $('#county').find('option:selected').html();
+		var detailAddress = $('#detailAddress').val();
+		var address = provinces + city + county + detailAddress;
+		// 百度地图API功能
+		var map = new BMap.Map("allmap");
+		var point = new BMap.Point();
+		map.centerAndZoom(point,12);
+		// 创建地址解析器实例
+		var myGeo = new BMap.Geocoder();
+		// 将地址解析结果显示在地图上,并调整地图视野
+		var geo = myGeo.getPoint(address, function(point){
+			if (point) {
+				map.centerAndZoom(point, 16);
+				map.addOverlay(new BMap.Marker(point));
+				// alert(point.lng+"|"+point.lat);
+				$('#partner_lng').val(point.lng);
+				$('#partner_lat').val(point.lat);
+
+			}else{
+				alert("您选择地址没有解析到结果!");
+			}
+			return 1;
+		});
+	}
+
+	function pr_upload(e) {
+        if(!stopFresh()){
+            return false;
+        }
+	    if(!/.+\.(jpg|jpeg|gif|png)/.test($("#pr_photo").val())){
+	        alert('图片格式不正确，请选择正确的图片!');
+	    }else{
+	        var reader = new FileReader();
+	        var file = e.target.files[0];
+	        var file_base64 = '';
+	        reader.readAsDataURL(file);
+	        var ext = file.type.substring(6);
+	        reader.onload=function(file){
+	            file_base64 = file.target.result;
+	            $('#pr_photo_').val(file_base64);
+	            $("#ext").val(ext);
+	        }
+
+			setTimeout(function () {
+	        $('#pr_photo_form').ajaxSubmit({
+	            url:"{{ admin_bundle.charUpload }}",
+	            headers:{'Authorization':hex_md5(data_str)},
+	            beforeSubmit:function(a,b,c){
+	                 backOff(true);
+	            },
+	            success:function(data){
+	                if(2000 == data.status){
+	                    $("#pr_photo_src").attr("src", '{{ admin_bundle.fileHost }}'+data.result.url);
+                        $("#pr_photo_src").css("display",'block');
+	                    $('#headImg').val(data.result.url);
+	                    $("#pr_photo_src").show();
+                        $('#del_photo').removeAttr('disabled')
+	                }
+	                 backOff(false);
+	            },
+	            error : function(result) {
+	                 msg('上传失败!');
+	                 backOff(false);
+	            },
+	            resetForm:false,
+	            dataType:'json'
+	        });},350);
+
+	        return false;
+	    }
+	}
+	function del_upload(){
+        if(!stopFresh()){
+            return false;
+        }
+	    obj = new Object();
+	    obj.url = '{{ gcate_info.gcImg }}';
+	    var that = $(this);
+	    fajax('/upload/del_img.html',obj,'post','json',function(d){
+	        alert(d.msg);
+	        if(200 == d.code){
+	            $('#headImg').val('');
+	            $("#pr_photo_src").attr("src",'');
+	            $("#pr_photo_src").css("display",'none');
+                $('#del_photo').attr('disabled','disabled');
+	            $("#pr_photo").val("");
+	        }
+	    });
+
+	}
+
+	$('input[name="bank_type"]').focus(function () {
+	    cardMsg();
+	});
+	function cardMsg(type) {
+	    var reg = /^([1-9]{1})(\d{15}|\d{16}|\d{17}|\d{18})$/;
+	    var card_no = $.trim($('input[name="card_no"]').val());
+	    if(card_no.match(reg)){
+	        fajax('/partner/bank_info.html','bank_no=' + card_no ,'POST','JSON',function (d) {
+	            if(d.code == 200){
+	                if(d.data.CardType == 'DC'){
+	                    $('input[name="bank_type"]').val(d.data.BranchBankName);
+	                    /*  if($('.enterprise')){
+					   $('input[name="branch_name"]').val(d.data.BranchBankName);
+					   $('input[name="branch_code"]').val(d.data.BranchBankCode);
+					   }*/
+	                    if(type==1){
+	                        confirm('<font color="red">该银行卡号作为收款的唯一卡号，请慎重填写！您确定提交该操作吗？</font>',function(){
+	                            fsubmit($("#authenticationForm"),function(data){
+	                                if(data.code == 200){
+	                                    window.location.href = data.openUrl;
+	                                }else{
+	                                    alert(data.msg);
+	                                }
+	                            });
+	                        },'实名认证信息');
+	                    }
+	                }else {
+	                    alert('银行卡类型必须为借记卡！');
+	                    $('input[name="bank_type"]').val('');
+	                    return false;
+	                }
+	            }else{
+	                alert(d.msg);
+	                $('input[name="bank_type"]').val('');
+	                /* $('input[name="branch_name"]').val('');
+					 $('input[name="branch_code"]').val('');*/
+	                return false;
+	            }
+	        });
+	    }else {
+	        alert('请输入正确的银行卡号！');
+	    }
+	}
+</script>

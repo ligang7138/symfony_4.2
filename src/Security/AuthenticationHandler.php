@@ -1,15 +1,15 @@
 <?php
 
 namespace App\Security;
-use App\Yszc\AdminBundle\Common\MobileDetect;
+use AdminBundle\Common\MobileDetect;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
-use App\Yszc\AdminBundle\Entity\AdminUsers;
-use App\Yszc\AdminBundle\Security\WebserviceUser;
+use AdminBundle\Entity\AdminUsers;
+use AdminBundle\Security\WebserviceUser;
 
 class AuthenticationHandler implements UserProviderInterface
 {

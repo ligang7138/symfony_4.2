@@ -1,0 +1,5 @@
+#resource", "type", "prefix", "path", "host", "schemes", "methods", "defaults", "requirements", "options", "condition", "controller", "name_prefix
+pay_bundle:
+    resource: '@PayBundle/Controller/'
+    prefix: /pay
+    type: annotation

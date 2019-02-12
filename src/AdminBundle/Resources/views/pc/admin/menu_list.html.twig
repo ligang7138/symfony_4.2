@@ -1,0 +1,73 @@
+<div class="wrapper wrapper-content fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h4>
+                        {% if 'Admin_editMenu' in action or 'all' in action %}<button onclick="open_tab(this,'/admin/edit_menu.html?mid=','添加菜单');" href="javascript:void(0);" class="btn btn-primary ">添加菜单</button>{% endif %}
+                    </h4>
+                </div>
+                <div class="ibox-content">
+                    <div class="jqGrid_wrapper">
+                        <div class="ui-jqgrid " id="gbox_table_list_1" dir="ltr" >
+                            <div class="ui-jqgrid-view table-responsive" role="grid" id="gview_table_list_1">
+                                <div  class="ui-jqgrid-hdiv">
+                                    <div class="ui-jqgrid-hbox">
+                                        <table rel="table" class="ui-jqgrid-htable ui-common-table table table-bordered" role="presentation" aria-labelledby="gbox_table_list_1">
+                                            <thead>
+                                            <tr class="ui-jqgrid-labels" role="row">
+                                                <th id="table_list_1_invdate" role="columnheader" class="ui-th-column ui-th-ltr">
+                                                    <div id="jqgh_table_list_1_invdate">菜单名称</div>
+                                                </th>
+                                                <th id="table_list_1_amount" role="columnheader" class="ui-th-column ui-th-ltr">
+                                                    <div id="jqgh_table_list_1_amount">路由</div>
+                                                </th>
+                                               <th id="table_list_1_amount" role="columnheader" class="ui-th-column ui-th-ltr">
+                                                    <div id="jqgh_table_list_1_amount">状态</div>
+                                                </th>
+                                                <th id="table_list_1_note" role="columnheader" class="ui-th-column ui-th-ltr">
+                                                    <div id="jqgh_table_list_1_note">操作</div>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="ui-jqgrid-bdiv">
+                                    <div style="position:relative;">
+                                        <div>
+                                        </div>
+                                        <table id="table_list" tabindex="0" role="presentation" aria-multiselectable="false"
+                                               aria-labelledby="gbox_table_list_1" class="ui-jqgrid-btable ui-common-table table table-bordered">
+                                            <tbody>
+                                            {% for key,menu in menu_list %}
+                                                {% if menu.menuName is not null %}
+                                                <tr {{ tabid }}="row" id="1" tabindex="-1" class="jqgrow ui-row-ltr">
+                                                    <td role="gridcell" style="" title="2010-05-24" aria-describedby="table_list_1_invdate">{{ menu.menuPadding | raw }}{% if menu.menuLevel==0 %}<i><b>{{ menu.menuName }}</b></i>{% else %}{{ menu.menuName }}{% endif %}</td>
+                                                    <td role="gridcell" style="" title="test" aria-describedby="table_list_1_name">{{ menu.menuRoute }}</td>
+                                                    <td role="gridcell" style="" title="test" aria-describedby="table_list_1_name">{% if menu.menuStatus==1 %}启用{% else %}未启用{% endif %}</td>
+                                                    <td role="gridcell" style="" title="note" aria-describedby="table_list_1_note">
+                                                        {% if 'Admin_editMenu' in action or 'all' in action %} <input class="btn btn_ btn-outline btn-primary" onclick="open_tab(this,'/admin/edit_menu.html?mid={{ menu.menuId }}','编辑菜单')" value="编辑" type="button">{% endif %}
+                                                        {% if 'Admin_delMenu' in action  or 'all' in action %} <input class="btn btn_ btn-outline btn-danger" onclick="confirm('确认删除吗?',function(){mhref('/admin/del/{{ menu.menuId }}_menu.html');});" value="删除" type="button">{% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ui-jqgrid-resize-mark" id="rs_mtable_list_1">
+                                &nbsp;
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ include('App\AdminBundle:common:table_color.html.twig',{ 'tabid' : tabid}) }}

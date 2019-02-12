@@ -1,0 +1,66 @@
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <a class="btn btn-outline btn-primary" title="添加管理员" data-pjax="" href="{{ path('admin_operate_appform',{'id' : id | default(0)}) }}" target="_blank">添加app</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap" data-plugin="dataTable" data-paging="false" data-ordering="false" data-searching="false" data-info="false">
+                        <thead>
+                        <tr>
+                            <th>标题</th>
+                            <th>更新地址</th>
+                            <th>是否强制更新</th>
+                            {#<th>说明</th>#}
+                            <th>版本号</th>
+                            <th>文件大小</th>
+                            <th>操作系统</th>
+                            <th>app类型</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for key,app in list %}
+                            <tr {{ tabid }}="row">
+                            <td>{{ app.title }}</td>
+                            <td>{{ app.app_url }}</td>
+                            <td>{% if app.is_force == 1 %}强制{% else %}不强制{% endif %}</td>
+                            {#<td width="100" style="word-wrap:break-word;word-break:break-all;">{{ app.info }}</td>#}
+                            <td>{{ app.version_no }}</td>
+                            <td>{{ app.filesize }}</td>
+                            <td>{{ attribute(admin_bundle.os_type,app.type) }}</td>
+                            <td>{{ attribute(admin_bundle.app_type,app.app_type) }}</td>
+                            <td>{{ app.update_time }}</td>
+                            <td>
+
+                                <a data-pjax="" href="{{ path('admin_operate_appform', {'id': app.id }) }}" target="_blank">编辑</a>
+
+                            </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function get{{ tabid }}Page(nums){
+    nums = (nums>0) ? nums : 1;
+    var obj = new Object();
+    onPage(nums,window.location.href,obj);
+}
+</script>

@@ -1,0 +1,1102 @@
+{% block css_common %}
+	<link href="{{ '/public/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css'|gfut }}" rel="stylesheet">
+	<link href="{{ '/public/css/plugins/iCheck/custom.css'|gfut }}" rel="stylesheet">
+	<link href="{{ '/public/css/plugins/chosen/chosen.css'|gfut }}" rel="stylesheet">
+	<link href="{{ '/public/css/plugins/x-editable/bootstrap-editable.css'|gfut }}" rel="stylesheet">
+	<link href="{{ '/public/js/plugins/photo_allery/photoGallery.css'|gfut }}" rel="stylesheet">
+	<style>
+		.lt-bar {
+			font-size: 16px;
+			border-left: 6px solid #1AB394;
+			padding-left: 10px;
+		}
+		.one-content{
+			padding: 15px 20px;
+		}
+		.one-content .active{
+			width: 50%;
+		}
+		.list{
+			margin-bottom: 75px;
+		}
+		.left-bar {
+			border-left: 6px solid #1AB394;
+			min-height: 25px;
+			padding-left: 10px;
+			margin: 20px 0 25px;
+			line-height: inherit;
+		}
+		.left-bar .left-bar-title{
+			padding-right: 20px;
+		}
+		.ui-jqgrid tr.jqgfirstrow td {
+			padding: 10px;
+		}
+		/* 这里是必填项 */
+		.must{
+			color: red;
+			font-size: 30px;
+			padding: 0 5px;
+			vertical-align: -webkit-baseline-middle;
+		}
+	</style>
+{% endblock %}
+{% block box %}
+	<div class="wrapper wrapper-content fadeInRight" id="photo_box">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox">
+					<div class="ibox-content">
+						<div class="tabs-container">
+							<ul class="nav nav-tabs">
+								<li class="active">
+									<a data-toggle="tab" href="#tab-{{ tabArr.one }}" aria-expanded="true">借款信息</a>
+								</li>
+								<li class="">
+									<a data-toggle="tab" href="#tab-{{ tabArr.two }}" aria-expanded="false">进件信息</a>
+								</li>
+								<li class="">
+									<a data-toggle="tab" href="#tab-{{ tabArr.three }}" aria-expanded="false">附件信息</a>
+								</li>
+								<li class="">
+									<a data-toggle="tab" href="#tab-{{ tabArr.four }}" aria-expanded="false">审核信息</a>
+								</li>
+								<li class="">
+									<a data-toggle="tab" href="#tab-{{ tabArr.five }}" aria-expanded="false">授信记录信息</a>
+								</li>
+                                {% block tab %}
+                                {% endblock %}
+								{% if apply_info.b_status > 2410 %}
+									<li class="">
+										<a data-toggle="tab" href="#tabb-{{ tabArr.signInfo }}"
+										   aria-expanded="false">签约信息</a>
+									</li>
+								{% endif %}
+							</ul>
+						</div>
+						{% block form %}
+							<form class="form-horizontal m-t" enctype="multipart/form-data" id="up_image_form" method="post">
+						{% endblock %}
+							<div class="tab-content" id="xlcommonIntoPiece">
+								<div id="tab-{{ tabArr.one }}" class="tab-pane active">
+									<div class="panel-body">
+										<fieldset>
+											<div class="form-group">
+												<div class="form-bolck">
+													<div class="col-sm-6 one-content">
+														<table rel="table" class="ui-jqgrid-htable ui-common-table table table-bordered" role="presentation" aria-labelledby="gbox_table_list_1">
+															<tr>
+																<th class="active">客户编号</th>
+																<th> {{ apply_info.u_code }}</th>
+															</tr>
+															<tr>
+																<th class="active">推广人员</th>
+																<th> {{ apply_info.b_service_no|valToStrByMap(leaders) }}</th>
+															</tr>
+															<tr>
+																<th class="active">客户申请时间</th>
+																<th> {{ apply_info.b_apply_time }}</th>
+															</tr>
+															<tr>
+																<th class="active">项目名称</th>
+																<th>{{ apply_info.pr_name }}</th>
+															</tr>
+															<tr>
+																<th class="active">产品名称</th>
+																<th>{{ apply_info.p_name }}</th>
+															</tr>
+														</table>
+													</div>
+													<div class="col-sm-6 one-content">
+														<table rel="table" class="ui-jqgrid-htable ui-common-table table table-bordered" role="presentation" aria-labelledby="gbox_table_list_1">
+															<tr>
+																<th class="active">还款方式</th>
+																<th>
+																	<span>
+                                                                        {{ attribute(admin_bundle.returnType,apply_info.p_return_type) }}
+                                                                   </span>
+																</th>
+															</tr>
+															<tr>
+																<th class="active">产品期限</th>
+																<th>{{ apply_info.p_period }}{% if pKind == 2 %}天{% else %}月{% endif %}</th>
+															</tr>
+															<tr>
+																<th class="active">借款用途</th>
+																<th>{{ apply_info.b_borrow_use_remark }}</th>
+															</tr>
+															<tr>
+																<th class="active">客户来源</th>
+																<th>
+																	<span>
+															          {% if apply_info.u_source == 1 %}老客户续贷
+																	  {% elseif apply_info.u_source == 2 %}公司资源
+																	  {% elseif apply_info.u_source == 3 %}自主开发
+																	  {% elseif apply_info.u_source == 4 %}转介绍
+																	  {% else %}其他
+																	  {% endif %}
+                                                                   </span>
+																</th>
+															</tr>
+															<tr>
+																<th  class="active">申请金额(元)</th>
+																<th  style="position: relative">
+																	{{ apply_info.b_borrow_amount }}
+																	{#<button type="button" class="btn btn-info btn-xs"#}
+																			{#style="position: absolute;right: 0;top: 1px;"#}
+																			{#onclick="fajax('/admin/get_return_list/{{ apply_info.p_id|default(0) }}.html','amount={% if apply_info.b_status <= 2100 %}{{ apply_info.b_borrow_amount }}{% elseif apply_info.b_status > 2100 and apply_info.b_status <= 2200 %}{{ apply_info.c2_proposal_amt }}{% elseif apply_info.b_status > 2200 and apply_info.b_status < 2500 %}{{ apply_info.c3_proposal_amt }}{% else %}{{ apply_info.c_amount }}{% endif %}&loan_start_date={{ apply_info.b_apply_time }}','post','json',function(data){show_return_list(data);});">#}
+																		{#还款试算#}
+																	{#</button>#}
+																</th>
+															</tr>
+														</table>
+													</div>
+												</div>
+                                            </div>
+										</fieldset>
+									</div>
+								</div>
+								<div id="tab-{{ tabArr.two }}" class="tab-pane">
+									<div class="panel-body">
+										<fieldset>
+											<h4 class="example-title left-bar">
+												<span class="left-bar-title">企业基本信息</span>
+											</h4>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>企业名称：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiName }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>注册时间：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiRegTime.date|date("Y-m-d") }}</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>营业执照号码：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiLicenseCode }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>注册地址：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiRegAddress }}</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label">注册资本：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiRegCapital }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label">实缴资本：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiFactCapital }}</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>经营范围：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiOperateRange }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>经营起始时间：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiOperateTime.date|date("Y-m-d") }}</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>经营地址：</label>
+													<div class="col-sm-3 control-text">{{ enterprise_info.ueiAddress }}</div>
+												</div>
+											</div>
+
+											<h4 class="example-title left-bar">
+												<span class="left-bar-title">法人基本信息</span>
+											</h4>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>法人姓名：</label>
+													<div class="col-sm-3 control-text">{{ apply_info.ui_true_name}}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>性别：</label>
+													<div class="col-sm-3 control-text">
+														<span>
+															{% if apply_info.u_sex ==1 %}男
+															{% else %}女
+															{% endif %}
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>身份证号：</label>
+													<div class="col-sm-3 control-text">{{ apply_info.ui_ident_no }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>婚姻状况：</label>
+													<div class="col-sm-3 control-text">
+														<span>
+														  {% if apply_info.ui_marriage == 20 %}已婚
+                                                          {% elseif apply_info.ui_marriage == 30 %}丧偶
+                                                          {% elseif apply_info.ui_marriage == 10 %}未婚
+                                                          {% elseif apply_info.ui_marriage == 40 %}离异
+                                                          {% endif %}
+                                                        </span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>年龄：</label>
+													<div class="col-sm-3 control-text">{{ userCurrInfo.ur_age }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label">住宅类型：</label>
+													<div class="col-sm-3 control-text">
+														<span>
+														{% if apply_info.ui_house_type == 1 %}商品房
+                                                        {% elseif apply_info.ui_house_type == 2 %}自建房
+                                                        {% elseif apply_info.ui_house_type == 3 %}宅基地
+                                                        {% elseif apply_info.ui_house_type == 4 %}租赁
+                                                        {% endif %}
+                                                        </span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>居住年限：</label>
+													<div class="col-sm-3 control-text">{{ userCurrInfo.ur_live_year }}年</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>教育程度：</label>
+													<div class="col-sm-3 control-text">
+														  <span>
+															{% if apply_info.ui_edu_degree == 0 %}初中及以下
+                                                           {% elseif apply_info.ui_edu_degree == 1 %}高中
+                                                           {% elseif apply_info.ui_edu_degree == 2 %}大专
+                                                           {% elseif apply_info.ui_edu_degree == 3 %}本科及以上
+                                                           {% endif %}
+                                                          </span>
+													</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>手机号码：</label>
+													<div class="col-sm-3 control-text">{{ apply_info.ui_phone }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label">住宅电话：</label>
+													<div class="col-sm-3 control-text">{{ apply_info.ui_fix_phone }}</div>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label">电子邮箱：</label>
+													<div class="col-sm-3 control-text">{{ apply_info.ui_email }}</div>
+												</div>
+												<div class="form-bolck">
+													<label class="col-sm-2 control-label"><span class="must">*</span>居住地址：</label>
+													<div class="col-sm-3 control-text">
+														<span>
+															{{ userCurrInfo.live_province }}
+                                                            {{ userCurrInfo.live_city }}
+                                                            {{ userCurrInfo.live_area }}
+                                                            {{ userCurrInfo.ur_live_address }}
+                                                        </span>
+													</div>
+												</div>
+											</div>
+
+											<h4 class="example-title left-bar">
+												<span class="left-bar-title">共同借款人</span>
+											</h4>
+											<div class="form-bolck list clearfix">
+													<table class="table table-bordered">
+														<thead>
+														<tr>
+															<th>姓名</th>
+															<th>身份证号</th>
+															<th>手机</th>
+															<th>共同借款人关系</th>
+															<th>开户行</th>
+															<th>银行卡号</th>
+														</tr>
+														</thead>
+                                                        {% for co in coBorrowInfo %}
+															<tr>
+																<td>{{ co.cb_true_name }}</td>
+																<td>{{ co.cb_ident_no }}</td>
+																<td>{{ co.cb_phone }}</td>
+																<td>{{ attribute(admin_bundle.coborrower_type,co.cb_type) }}</td>
+																<td>{{ co.cb_open_bank }}</td>
+																<td>{{ co.cb_bank_card_no }}</td>
+															</tr>
+                                                        {% else %}
+															<tr class="warning">
+																<td colspan="10"><em
+																			class="text-info">暂无数据！</em></td>
+															</tr>
+                                                        {% endfor %}
+													</table>
+												</div>
+
+											<h4 class="example-title left-bar">
+												<span class="left-bar-title"> 养殖信息</span>
+											</h4>
+											<div class="form-bolck list clearfix">
+													<div class="col-sm-6 one-content">
+														<table rel="table" class="ui-jqgrid-htable ui-common-table table table-bordered" role="presentation" aria-labelledby="gbox_table_list_1">
+															<tr>
+																<th class="active"> 猪场养殖时间</th>
+																<th>{{ culture_info.uciTime }}&nbsp;年</th>
+															</tr>
+															<tr>
+																<th class="active">后备母猪数量</th>
+																<th>{{ culture_info.uciBakSowNums }}&nbsp;个</th>
+															</tr>
+															<tr>
+																<th class="active"> 未断奶仔猪数量</th>
+																<th>{{ culture_info.uciUnweanedPiglets }}&nbsp;个</th>
+															</tr>
+															<tr>
+																<th class="active">育肥期数量</th>
+																<th>{{ culture_info.uciFatPigNums }}&nbsp;个</th>
+															</tr>
+															<tr>
+																<th class="active">本次采购饲料总额</th>
+																<th>{{ culture_info.uciPurchaseFeedAmt }}&nbsp;元</th>
+															</tr>
+															<tr>
+																<th class="active">养殖场面积</th>
+																<th>{{ culture_info.uciArea }}&nbsp;平方米</th>
+															</tr>
+															<tr>
+																<th class="active">养殖场地性质</th>
+																<th>{{ culture_info.uciPlaceTrait }}</th>
+															</tr>
+														</table>
+													</div>
+													<div class="col-sm-6 one-content">
+														<table rel="table" class="ui-jqgrid-htable ui-common-table table table-bordered" role="presentation" aria-labelledby="gbox_table_list_1">
+															<tr>
+																<th class="active"> 经产母猪数量</th>
+																<th>{{ culture_info.uciSowNums }}&nbsp;个</th>
+															</tr>
+															<tr>
+																<th class="active">年出栏量</th>
+																<th>{{ culture_info.uciYearButcherNums }}&nbsp;个</th>
+															</tr>
+															<tr>
+																<th class="active">保育仔猪数量</th>
+																<th>{{ culture_info.uciCarePigNums }}&nbsp;个</th>
+															</tr>
+															<tr>
+																<th class="active">目前未偿我公司借款总额</th>
+																<th>{{ culture_info.uciArrearsYsUnreturnAmt }}&nbsp;元</th>
+															</tr>
+															<tr>
+																<th class="active">本次采购供货厂商</th>
+																<th>{{ culture_info.uciPurchaseFactory }}</th>
+															</tr>
+															<tr>
+																<th class="active">养殖场总投资</th>
+																<th>{{ culture_info.uciTotalAmt }}&nbsp;元</th>
+															</tr>
+															<tr>
+																<th class="active">年收入(元)</th>
+																<th>{{ culture_info.uciYearIncome }}&nbsp;元</th>
+															</tr>
+														</table>
+													</div>
+												</div>
+
+											<h4 class="example-title left-bar">
+												<span class="left-bar-title"> 联系人信息</span>
+											</h4>
+											<div class="form-bolck list clearfix">
+													<table class="table table-bordered">
+														<tbody>
+														<tr bgcolor="f5f5f3">
+															<th>姓名</th>
+															<th>电话</th>
+															<th>地址</th>
+															<th>与借款人关系</th>
+															<th>身份证</th>
+															<th>性别</th>
+															<th>职业/工作</th>
+															<th>居住年限（年）</th>
+															<th>年龄</th>
+														</tr>
+                                                        {% for r in userRelation %}
+															<tr>
+																<td>{{ r.ur_name }}</td>
+																<td>{{ r.ur_phone }}</td>
+																<td>{{ r.ur_live_address }}</td>
+																<td>{{ attribute(admin_bundle.relation_status,r.ur_relation) }}</td>
+																<td>{{ r.ur_ident_no }}</td>
+																<td>{% if r.ur_sex==1 %}男{% else %}女{% endif %}</td>
+																<td>{{ r.ur_work_info }}</td>
+																<td>{{ r.ur_live_year }}</td>
+																<td>{{ r.ur_age }}</td>
+															</tr>
+                                                        {% endfor %}
+														</tbody>
+													</table>
+												</div>
+
+											<h4 class="example-title left-bar">
+												<span class="left-bar-title"> 备注信息</span>
+											</h4>
+											<div class="form-bolck list clearfix">
+													<table class="table table-bordered"  style="margin: 0">
+														<thead>
+														<tr>
+															<th colspan="9" height="50px">进件备注</th>
+														</tr>
+														</thead>
+														<tr>
+															<td height="50">{{ apply_info.b_remark }}</td>
+														</tr>
+													</table>
+												</div>
+										</fieldset>
+									</div>
+								</div>
+								<div id="tab-{{ tabArr.three }}" class="tab-pane">
+									<div class="panel-body">
+										<fieldset>
+											<legend class="lt-bar"><span class="must">*</span>证件资料信息</legend>
+											<div class="form-group">
+												<div class="gallerys col-sm-offset-1 col-sm-8">
+                                                    {% for d in userDaturm.cert_list %}
+														<div class="file-box">
+															<div class="file" id="file{{ d.ud_id }}" >
+															<span class="{% if apply_info.b_status==2500 and d.ud_new_url %}select_corner{% else %}corner{% endif %}" id="corner{{ d.ud_id }}"></span>
+
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+															</div>
+														</div>
+													{% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend class="lt-bar"><span class="must">*</span>实地调查资料信息</legend>
+											<div class="form-group">
+												<div class="gallerys col-sm-offset-1 col-sm-8">
+                                                    {% for d in userDaturm.real_list %}
+														<div class="file-box">
+															<div class="file-box">
+																<div class="file" id="file{{ d.ud_id }}" {% if apply_info.b_status==2500 and d.ud_newUrl %}style="border: 1px solid red;"{% endif %}>
+																	<span class="{% if apply_info.b_status==2500 and d.ud_newUrl %}select_corner{% else %}corner{% endif %}" id="corner{{ d.ud_id }}"></span>
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+																</div>
+															</div>
+														</div>
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend class="lt-bar"><span class="must">*</span>银行账户资料信息</legend>
+											<div class="form-group">
+												<div class="gallerys col-sm-offset-1 col-sm-8">
+                                                    {% for d in userDaturm.bank_list %}
+														<div class="file-box">
+															<div class="file" id="file{{ d.ud_id }}" >
+																<span class="{% if apply_info.b_status==2500 and d.ud_new_url %}select_corner{% else %}corner{% endif %}" id="corner{{ d.ud_id }}"></span>
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+															</div>
+														</div>
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend class="lt-bar">征信报告资料信息</legend>
+											<div class="form-group">
+												<div class="gallerys col-sm-offset-1 col-sm-8">
+                                                    {% for d in userDaturm.credit_list %}
+														<div class="file-box">
+															<div class="file" id="file{{ d.ud_id }}" >
+																<span class="{% if apply_info.b_status==2500 and d.ud_new_url %}select_corner{% else %}corner{% endif %}" id="corner{{ d.ud_id }}"></span>
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+															</div>
+														</div>
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend class="lt-bar"><span class="must">*</span>批款凭证资料信息</legend>
+											<div class="form-group">
+												<div class="gallerys col-sm-offset-1 col-sm-8">
+                                                    {% for d in userDaturm.loan_list %}
+														<div class="file-box">
+															<div class="file" id="file{{ d.ud_id }}" >
+																<span class="{% if apply_info.b_status==2500 and d.ud_new_url %}select_corner{% else %}corner{% endif %}" id="corner{{ d.ud_id }}"></span>
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+															</div>
+														</div>
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend class="lt-bar"><span class="must">*</span>合同资料信息</legend>
+											<div class="form-group">
+												<div class="gallerys col-sm-offset-1 col-sm-8">
+                                                    {% for d in userDaturm.contract_list %}
+														<div class="file-box">
+															<div class="file" id="file{{ d.ud_id }}" >
+																<span class="{% if apply_info.b_status==2500 and d.ud_new_url %}select_corner{% else %}corner{% endif %}" id="corner{{ d.ud_id }}"></span>
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+															</div>
+														</div>
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend class="lt-bar">其他资料信息</legend>
+											<div class="form-group">
+												<div class="gallerys col-sm-offset-1 col-sm-8">
+                                                    {% for d in userDaturm.other_list %}
+														<div class="file-box">
+															<div class="file">
+																<span class="corner"></span>
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+															</div>
+														</div>
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend class="lt-bar">上标补充资料信息</legend>
+											<div class="form-group file_list">
+												<div class="gallerys col-sm-offset-1 col-sm-8 filelist_{{ apply_info.b_id|default(0) }}_i">
+                                                    {% for d in userDaturm.fund_list %}
+														<div class="file-box">
+                                                            {% if d.a_id == curr_user.aId %}
+															<span class="cancel" data-id="{{ d.ud_id }}">删除</span>
+                                                            {% endif %}
+															<div class="file">
+																<span class="corner"></span>
+																<div class="image imgWrap">
+																	<img id="image{{ d.ud_id }}" alt="image" data-id="{{ d.ud_id }}" degree="{{ d.ud_degree }}" class="gallery-pic active rotate{{ d.ud_degree }} img-responsive center-block" src="{{ admin_bundle.fileHost }}{{d.ud_url}}" onclick="openPhotoWin(this)">
+																</div>
+																<div class="file-name">
+                                                                    {{ attribute(admin_bundle.file_type,d.ud_type) }}-{{ loop.index }}
+																</div>
+															</div>
+														</div>
+                                                    {% else %}
+														{% if ！curr_user.aRoles|valInArray(22) %}
+															<div class="file-box">
+																<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+															</div>
+														{% endif %}
+													{% endfor %}
+                                                    {% if curr_user.aRoles|valInArray(22) %}
+													<div class="file-box" style="width: 140px !important;">
+														<div class="file">
+															<a href="javascript:void(0);" onclick="mopen('/admin/upload/form.html?b_id={{ apply_info.b_id|default(0) }}&f_type=i','资料图片上传',null,['750px','auto']);">
+																<span class="corner"></span>
+																<div class="image">
+																	<img alt="image" class="img-responsive center-block" width="100%" src="/public/img/upload.png">
+																</div>
+																<div class="file-name">
+																	点击上传图片
+																</div>
+															</a>
+														</div>
+													</div>
+                                                    {% endif %}
+												</div>
+
+											</div>
+											{% if apply_info.b_status>2410 %}
+											<legend>合同影像资料</legend>
+											<div class="form-group">
+												<label class="col-sm-2 control-label">视频URL地址：</label>
+												<div class="col-sm-3 control-text">
+													<a href="{{ contract_info.cVideoUrl }}" target="_blank">{{ contract_info.cVideoUrl }}</a>
+												</div>
+											</div>
+											{% endif %}
+											<div class="hr-line-dashed"></div>
+										</fieldset>
+									</div>
+								</div>
+								<div id="tab-{{ tabArr.four }}" class="tab-pane">
+									<div class="panel-body">
+										<fieldset>
+											<legend>复审意见</legend>
+											<div class="form-group">
+												<div class="form-bolck">
+													{% if recheckInfo != null %}
+													<label class="col-sm-2 control-label">审核人：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_op_name">
+															<label>
+																<span>{{ recheckInfo.aName }}</span>
+															</label>
+														</div>
+													</div>
+													<label class="col-sm-2 control-label">审核时间：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_op_time">
+															<label>
+																<span>{{ recheckInfo.c2CheckTime.format('Y-m-d H:i:s') }}</span>
+															</label>
+														</div>
+													</div>
+													{% if recheckInfo.c2ProposalAmt > 0 %}
+														<label class="col-sm-2 control-label">复审建议额度：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline i-checks" id="b_status">
+																<label>
+																	<span >{{ recheckInfo.c2ProposalAmt }}&nbsp;元</span>
+																</label>
+
+															</div>
+														</div>
+													{% endif %}
+													<label class="col-sm-2 control-label">复审意见：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_remark">
+															<label>
+																<span>{{ recheckInfo.c2Opinion }}</span>
+															</label>
+														</div>
+														{% if curr_user.aRoles|arrayInArray([15,16,27,28,21,22,23]) %}
+															<label id="pdfView_{{ b_id }}" src="{{ filePath }}" class="btn btn-primary">
+																预览复审文件
+															</label>
+														{% endif %}
+													</div>
+													<label class="col-sm-2 control-label">担保人：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_remark">
+															<label>
+																{% for bondsman in bondsmans %}
+																	<span style="padding: 10px 10px;">{{ bondsman.urName }}</span>
+																{% endfor %}
+															</label>
+														</div>
+													</div>
+													{% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+													{% endif %}
+												</div>
+											</div>
+											<legend>终审意见</legend>
+											<div class="form-group">
+												<div class="form-bolck">
+													{% if lastcheckInfo != null %}
+													<label class="col-sm-2 control-label">审核人：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_op_name">
+															<label>
+																<span>{{ lastcheckInfo.aName }}</span>
+															</label>
+														</div>
+													</div>
+													<label class="col-sm-2 control-label">审核时间：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_op_time">
+															<label>
+																<span>{{ lastcheckInfo.c3CheckTime.format('Y-m-d H:i:s') }}</span>
+															</label>
+														</div>
+													</div>
+                                                    {% if lastcheckInfo.c3ProposalAmt > 0 %}
+														<label class="col-sm-2 control-label">终审建议额度：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline i-checks" id="b_status">
+																<label>
+																	<span >{{ lastcheckInfo.c3ProposalAmt }}&nbsp;元</span>
+																</label>
+
+															</div>
+														</div>
+                                                    {% endif %}
+													<label class="col-sm-2 control-label">终审意见：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_remark">
+															<label>
+																<span>{{ lastcheckInfo.c3Opinion }}</span>
+															</label>
+														</div>
+													</div>
+													<label class="col-sm-2 control-label">风险等级：</label>
+													<div class="col-sm-9">
+														<div class="radio-inline" id="bt_remark">
+															<label>
+																<span>{{ attribute(admin_bundle.riskLevel,lastcheckInfo.c3RiskLevel) }}</span>
+															</label>
+														</div>
+													</div>
+													{% else %}
+													<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+													{% endif %}
+												</div>
+											</div>
+											<legend>复议意见</legend>
+											<div class="form-group">
+												<div class="form-bolck">
+                                                    {% for fyinfo in fyCheck %}
+														<label class="col-sm-2 control-label">审核人：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline" id="bt_op_name">
+																<label>
+																	<span>{{ fyinfo.bt_op_name }}</span>
+																</label>
+															</div>
+														</div>
+														<label class="col-sm-2 control-label">审核时间：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline" id="bt_op_time">
+																<label>
+																	<span>{{ fyinfo.bt_op_time }}</span>
+																</label>
+															</div>
+														</div>
+														<label class="col-sm-2 control-label">复议意见：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline" id="bt_remark">
+																<label>
+																	<span>{{ fyinfo.bt_remark }}</span>
+																</label>
+															</div>
+														</div>
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+											<legend>批款意见</legend>
+											<div class="form-group">
+												<div class="form-bolck clearfix">
+                                                    {% for credit in creditCheck %}
+														<label class="col-sm-2 control-label">审核人：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline" id="bt_op_name">
+																<label>
+																	<span>{{ credit.bt_op_name }}</span>
+																</label>
+															</div>
+														</div>
+														<label class="col-sm-2 control-label">审核时间：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline" id="bt_op_time">
+																<label>
+																	<span>{{ credit.bt_op_time }}</span>
+																</label>
+															</div>
+														</div>
+														<label class="col-sm-2 control-label">批款金额：</label>
+														<div class="col-sm-9">
+															<div class="radio-inline" id="lc_loan_amt">
+																<label>
+																	<span>{{ credit.lc_loan_amt }}元</span>
+																</label>
+															</div>
+														</div>
+														<div class="clearfix" style="border-bottom: 1px dashed #ccc;">
+															<label class="col-sm-2 control-label" >批款意见：</label>
+															<div class="col-sm-9" >
+																<div class="radio-inline" id="bt_remark">
+																	<label>
+																		<span>{{ credit.bt_remark }}</span>
+																	</label>
+																</div>
+															</div>
+														</div>
+
+
+                                                    {% else %}
+														<p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+                                                    {% endfor %}
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+								<div id="tab-{{ tabArr.five }}" class="tab-pane">
+									<div class="panel-body">
+									  <fieldset>
+										{% if creditRecordInfo != null %}
+										{% for key,recordInfo in creditRecordInfo %}
+										<legend> 产品名称：{{ recordInfo.p_name }}</legend>
+										  <div class="form-bolck list clearfix">
+														<h4 class="example-title left-bar">
+															<span class="left-bar-title">授信记录 </span>
+														</h4>
+														<table class="table table-bordered">
+															<tbody>
+															   <tr bgcolor="f5f5f3">
+																  <th>操作人</th>
+																  <th>操作时间</th>
+																  <th>审核备注说明</th>
+															   </tr>
+                                                                   {% if recordInfo.behaviorTraceList != null %}
+                                                                   {% for key,behaviorTrace in recordInfo.behaviorTraceList %}
+															   <tr class="{% if loop.first %} success {% endif %}">
+																   <td style="width:15%;">{{ behaviorTrace.bt_op_name }}</td>
+																   <td style="width:20%;">{{ behaviorTrace.bt_op_time|date('Y-m-d H:i:s') }}</td>
+																   <td>{{ behaviorTrace.bt_remark }}</td>
+															   </tr>
+                                                               {% endfor %}
+                                                               {% else %}
+																   <tr>
+																	   <td align="center" colspan="20"><font color="#23c6c8">暂无数据!</font></td>
+																   </tr>
+                                                               {% endif %}
+															</tbody>
+														</table>
+													</div>
+										  {% endfor %}
+										  {% else %}
+											  <p class="text-info" style="margin-left: 50px;">暂无数据!</p>
+										  {% endif %}
+									 </fieldset>
+									</div>
+								</div>
+                                {% block tabInfo %}
+                                {% endblock %}
+								{% if apply_info.b_status > 2410 %}
+									<div id="tabb-{{ tabArr.signInfo }}" class="tab-pane">
+										<div class="panel-body">
+											<fieldset>
+												<div class="list">
+													<h4 class="example-title left-bar">
+														<span class="left-bar-title">借款信息</span>
+													</h4>
+													<div class="form-group">
+														<div class="form-bolck">
+															<label class="col-sm-2 control-label">项目名称：</label>
+															<div class="col-sm-3 control-text">{{ apply_info.pr_name }}</div>
+														</div>
+														<div class="form-bolck">
+															<label class="col-sm-2 control-label">产品名称：</label>
+															<div class="col-sm-3 control-text">{{ apply_info.p_name }}</div>
+														</div>
+													</div>
+													<div class="form-group">
+														<div class="form-bolck">
+															<label class="col-sm-2 control-label">期限：</label>
+															<div class="col-sm-3 control-text">{{ apply_info.p_period }}{% if pKind == 2 %}天{% else %}月{% endif %}</div>
+														</div>
+														<div class="form-bolck">
+															<label class="col-sm-2 control-label">还款方式：</label>
+															<div class="col-sm-3 control-text">{{ attribute(admin_bundle.returnType,apply_info.p_return_type) }}</div>
+														</div>
+													</div>
+													<div class="form-group">
+														<div class="form-bolck">
+															<label class="col-sm-2 control-label">借款金额(元)：</label>
+															<div class="col-sm-3 control-text">{{ borrower_amount }}</div>
+														</div>
+														<div class="form-bolck">
+															<label class="col-sm-2 control-label">电子合同编号：</label>
+															<div class="col-sm-3 control-text">A{{ apply_info.b_apply_time | date('ymd') }}{{ apply_info.b_id }}
+															</div>
+														</div>
+													</div>
+													<div class="form-group">
+														<div class="form-bolck">
+															<label class="col-sm-2 control-label">面签时间：</label>
+															<div class="col-sm-3 control-text">
+                                                                    <span>
+	                                                                    {{ contract_info.cAddTime | date('Y-m-d') }}
+                                                                    </span>
+															</div>
+														</div>
+													</div>
+
+												</div>
+												<div class="list">
+													<h4 class="example-title left-bar">
+														<span class="left-bar-title">收款人信息</span>
+													</h4>
+													<table class="table table-bordered">
+														<thead>
+														<tr>
+															<th>姓名</th>
+															<th>身份证号</th>
+															<th>手机号</th>
+															<th>银行卡号</th>
+															<th>开户行</th>
+															<th>关系</th>
+															<th>性别</th>
+														</tr>
+														</thead>
+														<tbody>
+														{% if payeeInfo is not null %}
+															<tr>
+																<td>{{ payeeInfo.cbTrueName }}</td>
+																<td>{{ payeeInfo.cbIdentNo }}</td>
+																<td>{{ payeeInfo.cbPhone }}</td>
+																<td>{{ payeeInfo.cbBankCardNo }}</td>
+																<td>{{ payeeInfo.cbOpenBank }}</td>
+																<td>{% if payeeInfo.isPayee %}配偶{% else %}本人{% endif %}</td>
+																<td>{{ payeeInfo.cbIdentNo | getSex }}</td>
+															</tr>
+
+														{% else %}
+															<tr class="warning">
+																<td colspan="10"><em class="text-info">暂无数据！</em>
+																</td>
+															</tr>
+														{% endif %}
+
+														</tbody>
+													</table>
+													<div style="color: blue;font-size:12px;">提示：收款人指需要在“屹农金服”平台开通账户、绑定银行卡的人</div><br/>
+													<div id='jOrgChart'></div>
+												</div>
+												<div class="list">
+													<h4 class="example-title left-bar">
+														<span class="left-bar-title">查看合同</span>
+													</h4>
+													<div class="form-group">
+														<div class="form-bolck">
+															<div class="col-sm-12 control-text">
+																<button type="button" onclick="getContract(1);" class="btn btn-sm btn-primary"> 封面</button>
+																<button type="button" onclick="getContract(2);" class="btn btn-sm btn-primary"> 借款协议</button>
+																<button type="button" onclick="getContract(3);" class="btn btn-sm btn-primary"> 担保函</button>
+																<button type="button" onclick="getContract(4);" class="btn btn-sm btn-primary"> 协议书</button>
+																<button type="button" onclick="getContract(5);" class="btn btn-sm btn-primary"> 自愿声明</button> 																    <button type="button" onclick="getContract(6);" class="btn btn-sm btn-primary"> 借条</button>																		                        <button type="button" onclick="getContract(7);" class="btn btn-sm btn-primary"> 收付款委托书</button>
+																<button type="button" onclick="getContract(8);" class="btn btn-sm btn-primary"> 授权委托书</button>
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</fieldset>
+										</div>
+									</div>
+								{% endif %}
+							</div>
+							{%  block checkSub %}
+							{% endblock %}
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="{{ '/public/js/plugins/photo_allery/jquery.photo.gallery.js'|gfut }}"></script>
+	<script type="text/javascript">
+        var BASE_URL = '/public/js/plugins/webuploader';
+        data_str='{{ "now"|date("Y-m-d") }}';
+	</script>
+	<script src="{{ '/public/js/plugins/webuploader/webuploader.js'|gfut }}"></script>
+	<script language="javascript">
+        $(function () {
+            $(".file_list").delegate(".cancel","click",function(){
+                obj = new Object();
+                obj.ubid = $(this).attr('data-id');
+                var that = $(this);
+                fajax('/admin/upload/del.html',obj,'post','json',function(d){
+                    if(200 == d.code){
+                        that.parent().remove();
+                    }
+                    alert(d.msg);
+                });
+            });
+
+            $("#pdfView_{{ b_id }}").click(function(){
+                var url = $(this).attr("src");
+                if(url == ''){
+                    alert('您还没有上传文件!');
+                    return false;
+                }
+                window.open(url,'_blank');
+            })
+        })
+        function getContract(type) {
+
+            var bid = {{ b_id }};
+
+            var url = '/contract/getpdf/' + bid + '-' + type + '.html';
+
+            window.open(url, '_blank');
+
+        }
+        function image_upload(ud_id) {
+            if ($("#fileToUpload"+ud_id).val().length == 0) {
+                alert('请选择图片文件!');return false;
+            }else if(!/.+\.jpg/.test($("#fileToUpload"+ud_id).val()) && !/.+\.png/.test($("#fileToUpload"+ud_id).val())){
+                alert('图片文件格式不正确，请选择jpg|png文件!');
+                return false;
+            }else{
+                $('#up_image_form').ajaxSubmit({
+                    url:"{{ admin_bundle.uploadFileUrl }}",
+                    type: 'POST',
+                    beforeSubmit:function(a,b,c){
+                        backOff(true);
+                    },
+                    headers:{'Authorization':hex_md5(data_str)},
+                    success:function(d){
+                        msg(d.msg);
+                        if(2000==d.status){
+                            fajax('/admin/upload/edit_save.html','udid='+ud_id+'&url=' + d.result.url,'post','json',function (data) {alert(data.msg);$('#corner'+data.udid).removeClass('corner').addClass('select_corner');$('#file'+data.udid).css('border','1px solid red');});
+                        }else{
+                            alert(d.msg);
+                        }
+                        backOff(false);
+                    },
+                    error : function(result) {
+                        console.log(result);
+                        msg('上传失败!');
+                        backOff(false);
+                    },
+                    resetForm:true,
+                    dataType:'json'
+                });
+                return false;
+            }
+        }
+	</script>
+{% endblock %}

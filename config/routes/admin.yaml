@@ -1,0 +1,5 @@
+#resource", "type", "prefix", "path", "host", "schemes", "methods", "defaults", "requirements", "options", "condition", "controller", "name_prefix
+admin_bundle:
+    resource: "@AdminBundle/Controller/"
+    prefix: /f
+    type: annotation

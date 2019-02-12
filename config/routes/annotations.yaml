@@ -1,9 +1,3 @@
 controllers:
     resource: ../../src/Controller/
     type: annotation
-
-AdminBundle:
-    resource: "@AdminBundle/Controller/"
-    type:     annotation
-#    prefix:   /f
-    prefix:   /

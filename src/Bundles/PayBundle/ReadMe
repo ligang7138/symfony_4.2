@@ -1,0 +1,9 @@
+为方便管理维护，可以将所有bundle放在Bundles目录下。
+    1.在composer.json文件增加 "Bundles\\": "src/Bundles/" ，注意要执行 composer dump-autoload
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Bundles\\": "src/Bundles/"
+        }
+    },
+    2.路由配置参照 /data/www/symfony/symfony_4.2/config/routes/pay.yaml 文件

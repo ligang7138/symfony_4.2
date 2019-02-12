@@ -1,0 +1,56 @@
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <div class="col-sm-12 table-responsive">
+                        <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap">
+                            <thead>
+                            <tr>
+                                <th>订单编号</th>
+                                <th>用户姓名</th>
+                                <th>手机号</th>
+                                <th>商品名称</th>
+                                <th>商户名称</th>
+                                <th>交易金额</th>
+                                <th>交易时间</th>
+                                <th>交易状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for key,transaction in transactionList %}
+                                <tr>
+                                    <td>{{ transaction.order_id }}</td>
+                                    <td>{{ transaction.u_true_name }}</td>
+                                    <td>{{ transaction.u_phone }}</td>
+                                    <td>{{ transaction.p_name }}</td>
+                                    <td>{{ transaction.partner_name }}</td>
+                                    <td>{{ transaction.t_amount|number_format(2, '.', ',') }}</td>
+                                    <td>{{ transaction.t_time }}</td>
+                                    <td>{{ attribute(admin_bundle.transaction_status,transaction.t_status) }}</td>
+                                    <td>
+                                        <!--<a data-pjax class="btn btn_ btn-outline btn-primary" href="/order/transaction/{{ transaction.order_id }}.html" target="_blank">详情</a>-->
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function get{{ tabid }}Page(nums){
+        nums = (nums>0) ? nums : 1;
+        var obj = new Object();
+        onPage(nums,window.location.href,obj);
+    }
+</script>

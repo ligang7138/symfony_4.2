@@ -1,0 +1,26 @@
+<div class="page-container">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body">
+                        <form class="form-horizontal fv-form fv-form-bootstrap" action="/order/modify/{{ order.orderId }}.html" method="post" id="changeCostForm"  onsubmit="fsubmit(this);return false;">
+                            <div class="form-group has-feedback">
+                                <label class="col-sm-3 control-label"><span class="must">*</span>运费金额：</label>
+                                <div class="col-sm-8">
+                                    <input name=""  type="text" class="form-control" required=""  aria-required="true" placeholder="运费金额小于商品合计金额">
+                                </div>
+                            </div>
+                            <div class="form-group has-feedback">
+                                <label class="col-sm-3 control-label"><span class="must">*</span>减免金额：</label>
+                                <div class="col-sm-8">
+                                    <input name=""  type="text" class="form-control" required=""  aria-required="true" placeholder="请输入要减免的金额">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

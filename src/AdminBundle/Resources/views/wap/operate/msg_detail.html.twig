@@ -1,0 +1,118 @@
+<style>
+    #pr_photo_file,#pr_photo_file_del{
+        position: relative;
+        display: inline-block;
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+    #pr_photo_file #pr_photo {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+    #pr_photo_file_del #del_photo {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+    #pr_photo_file:hover,#pr_photo_file_del:hover {
+        background: #AADFFD;
+        border-color: #78C3F3;
+        color: #004974;
+        text-decoration: none;
+    }
+</style>
+<div class="page-container">
+    <div class="page animation-fade page-forms">
+        <div class="page-content container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">发布消息</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal fv-form fv-form-bootstrap"  id="constraintsForm">
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">消息名称：</label>
+                                    <div class="form-bolck col-sm-8 control-text">
+                                        {{ msg.msgTitle }}
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">类型：</label>
+                                    <div class="form-bolck col-sm-8 control-text">
+                                        {% if msg.msgType == 1 %}系统消息{% elseif  msg.msgType == 2 %}订单消息{% endif %}
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">推送平台：</label>
+                                    <div class="form-bolck col-sm-8 control-text">
+                                        {% if msg.msgSysType == 1 %}所有{% elseif msg.msgSysType == 2 %}App{% elseif msg.msgSysType == 3 %}商户后台{% endif %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">消息内容：</label>
+                                    <div class="form-bolck col-sm-8 control-text">
+                                         {{ msg.msgContent }}
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">发布状态：</label>
+                                    <div class="form-bolck col-sm-8 control-text">
+                                            <div class="row row-lg">
+                                                <div class="col-sm-12 col-md-6">
+                                               {% if msg.msgSendStatus == 1 %} 未发布 {% elseif msg.msgSendStatus == 2 %} 已发布 {% endif %}
+                                                </div>
+
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="form-group has-feedback">
+                                    <label class="col-sm-3 control-label">是否弹框：</label>
+                                    <div class="form-bolck col-sm-8 control-text">
+                                        <div class="row row-lg">
+                                            <div class="col-sm-12 col-md-6">
+					                            {% if msg.isBounce == 1 %} 不弹框 {% elseif msg.isBounce == 2 %} 弹框 {% endif %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    data_str='{{ "now"|date("Y-m-d") }}';
+</script>
+<script>
+    $('#validateButton').click(function () {
+        fsubmit($("#constraintsForm"),function(data){
+            alert(data.msg)
+            if(data.code == 200) {
+                close_tab();
+                window.location.href = data.openUrl;
+            }
+        });
+    })
+</script>

@@ -1,6 +1,6 @@
 security:
     encoders:
-        App\Yszc\AdminBundle\Entity\AdminUsers:
+        AdminBundle\Entity\AdminUsers:
             id: grouptour.security.core.encoder
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:

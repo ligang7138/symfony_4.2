@@ -1,0 +1,7 @@
+admin_homepage:
+    path:     /f
+    defaults: { _controller: AdminBundle:Security:login }
+    methods:  [GET]
+
+no_url:
+    path: /#

@@ -1,0 +1,58 @@
+<div class="page-content">
+    <div class="panel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <a class="btn btn-outline btn-primary" title="添加管理员" data-pjax="" href="/admin/user/0.html" target="_blank">添加管理员</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-body container-fluid">
+                    <table class="table table-bordered table-hover dataTable table-striped width-full text-nowrap" data-plugin="dataTable" data-paging="false" data-ordering="false" data-searching="false" data-info="false">
+                        <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>用户姓名</th>
+                            <th>手机号</th>
+                            <th>添加时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for key,user in user_list %}
+                            <tr {{ tabid }}="row">
+                            <td>{{ user.a_name }}</td>
+                            <td>{{ user.a_true_name }}</td>
+                            <td>{{ user.a_phone }}</td>
+                            <td>{{ user.a_add_time }}</td>
+                            <td>{% if user.a_status == 1 %}已激活{% else %}<font color="red">未激活</font>{% endif %}</td>
+                            <td>
+                                {% if (user.a_type!=1 and user_type in [1,2]) or 'all' in action %}
+                                    <a data-pjax="" href="/admin/user/{{ user.aid }}.html" target="_blank">编辑</a>
+                                {% endif %}
+                            </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="col-xs-12 margin-top-10">
+                        <div class="dataTables_paginate paging_simple_numbers pull-right" id="dataTableExample_paginate" style="padding: 5px;">
+                            {{ page|raw }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function get{{ tabid }}Page(nums){
+    nums = (nums>0) ? nums : 1;
+    var obj = new Object();
+    onPage(nums,window.location.href,obj);
+}
+</script>

@@ -18,8 +18,8 @@ class BaiduController extends Controller
 	 * @Route("/case")
 	 */
 	public function testAction(){
-		$redis = $this->container->get('redis');
-		echo 3434;die;
+		$redis = $this->container->get('redis_service');
+//		echo 3434;die;
 		echo '<pre />';
 		print_r($redis);die;
 		return $this->render("baidu/case.html.twig",['name' => '百度地图使用案例']);

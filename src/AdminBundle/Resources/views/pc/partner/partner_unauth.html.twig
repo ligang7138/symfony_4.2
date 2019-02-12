@@ -1,0 +1,54 @@
+<style>
+    /*  表单向导完成状态的样式 */
+    .state{
+        display: inline-block;
+        margin: 50px 0 30px;
+        border-radius: 50%;
+        border: 2px solid;
+    }
+    .complete_state{
+        border-color: #00b400;
+        color: #00b400;
+    }
+    .fail_state{
+        border-color: #b41a00;
+        background-color: #b41a00;
+        color: white;
+    }
+    .form-bolck .example-wrap input,.form-bolck .example-wrap select{
+        display: inline-block;
+        width: 90%;
+    }
+</style>
+<div class="page-content" id="photo_box">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel" id="partner_authenticationForm">
+                <div class="panel-heading">
+                    <h3 class="panel-title">商家认证</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="wizard-content">
+                        <div class="wizard-pane active partner_check_success" id="exampleGetting" role="tabpanel">
+                            <div class="text-center margin-vertical-20 padding-bottom-60">
+                                <div class="state fail_state padding-5">
+                                    <i class="icon wb-close font-size-40" aria-hidden="true"></i>
+                                </div>
+
+                                <h4 style="font-size: 18px;font-weight: 600;margin-bottom: 35px">很抱歉，您的商户未认证</h4>
+
+                                <a data-pjax class="btn btn-primary ladda-button" href="{{ path('admin_partner_authentication') }} ">去认证</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function openPartnerCheck(){
+        window.location.href = '{{ path('admin_partner_check') }}?reset=1';
+    }
+</script>
