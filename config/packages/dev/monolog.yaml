@@ -1,10 +1,19 @@
 monolog:
     handlers:
         main:
-            type: stream
-            path: "%kernel.logs_dir%/%kernel.environment%.log"
-            level: debug
+#            type: stream
+#            path: "%kernel.logs_dir%/%kernel.environment%.log"
+#            level: debug
             channels: ["!event"]
+            type:  rotating_file
+            path:  '%kernel.logs_dir%/%env(LOG_DIR_NAME)%/%kernel.environment%.log'
+#            path:  '%kernel.logs_dir%/%kernel.environment%.log'
+            level: debug
+            date_format: 'd'
+            # max number of log files to keep
+            # defaults to zero, which means infinite files
+            # 要保留的日志文件的最大数量，默认是零，即，无限个文件
+            max_files: 10
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:
@@ -13,6 +22,18 @@ monolog:
         #chromephp:
         #    type: chromephp
         #    level: info
+        #只记录event的日志信息
+        event:
+            type:  rotating_file
+            path:  '%kernel.logs_dir%/%env(LOG_DIR_NAME)%/event.log'
+            #            path:  '%kernel.logs_dir%/%kernel.environment%.log'
+            level: debug
+            date_format: 'd'
+            # max number of log files to keep
+            # defaults to zero, which means infinite files
+            # 要保留的日志文件的最大数量，默认是零，即，无限个文件
+            max_files: 10
+            channels: ["event"]
         console:
             type: console
             process_psr_3_messages: false

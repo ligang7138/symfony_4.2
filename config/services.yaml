@@ -26,6 +26,32 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    kernel.listener.request_listener:
+        class: App\EventListener\ExceptionListener
+        calls:
+            - [ setLogger , ['@logger']]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest , priority: 11}
+
+    kernel.listener.exception_listener:
+        class: App\EventListener\ExceptionListener
+        calls:
+            - [ setLogger , ['@logger']]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    shop.event_view_response:
+        class: App\EventListener\ResponseListener
+        calls:
+            - [ setLogger , ['@logger']]
+        tags:
+            - { name: kernel.event_listener , event: kernel.response, method: onKernelResponse , priority: 8 }
+
+    monolog.processor.session_request:
+        class: App\Logger\ApiProcessor
+        #        arguments:  ['@session']
+        tags:
+            - { name: monolog.processor, method: processRecord }
 
     grouptour.security.core.encoder:
         class: App\Security\AdminPasswordEncoder
@@ -39,17 +65,28 @@ services:
         class: App\Services\Listeners\LoginListener
         arguments:  ["@security.http_utils", {},"@service_container"]
         tags:
-        - { name: 'monolog.logger', channel: 'security' }
+            - { name: 'monolog.logger', channel: 'security' }
 
     redis_service:
         public: true
         class: App\Services\RedisService
         arguments: ["@snc_redis.default"]
 
+    # 用来做api接口，cookie失效时间
+    redis_token_provider:
+        class: App\Security\RedisTokenProvider
+        arguments: ["@snc_redis.default"]
+
     application_service:
         class: App\DependencyInjection\AppService
         arguments: ["@service_container"]
 
+    # 用来扩展twig函数
+#    admin.twig_extension:
+#        class: App\Twig\AdminExtension
+#        public: false
+#        tags:
+#            - { name: twig.extension }
 #    SecurityCheckListener:
 #        class: App\Services\Listeners\SecurityCheckListener
 #        arguments: ["@application_service","%admin_bundle%","@service_container"]
