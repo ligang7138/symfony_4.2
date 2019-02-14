@@ -1,5 +1,5 @@
 <?php
-namespace AdminBundle\DependencyInjection;
+namespace App\AdminBundle\DependencyInjection;
 
     /**
      * 分页类

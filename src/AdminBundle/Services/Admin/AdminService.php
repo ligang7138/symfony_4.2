@@ -6,7 +6,7 @@
  * Time: 14:00
  */
 
-namespace AdminBundle\Services\Admin;
+namespace App\AdminBundle\Services\Admin;
 
 
 interface  AdminService

@@ -1,10 +1,10 @@
 <?php
-namespace AdminBundle\EventSubscriber;
+namespace App\AdminBundle\EventSubscriber;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\EventArgs;
 use Doctrine\ORM\Events;
-use AdminBundle\Common\CommonFunction;
+use App\AdminBundle\Common\CommonFunction;
 
 class ApiDoctrineSubscriber implements EventSubscriber
 {

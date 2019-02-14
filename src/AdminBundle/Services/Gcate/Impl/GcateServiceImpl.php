@@ -6,9 +6,9 @@
  * Time: 14:05
  */
 
-namespace AdminBundle\Services\Gcate\Impl;
-use AdminBundle\Services\Service;
-use AdminBundle\Services\Gcate\GcateService;
+namespace App\AdminBundle\Services\Gcate\Impl;
+use App\AdminBundle\Services\Service;
+use App\AdminBundle\Services\Gcate\GcateService;
 
 class GcateServiceImpl extends Service implements GcateService
 {

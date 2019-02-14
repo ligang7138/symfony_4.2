@@ -1,5 +1,5 @@
 <?php
-namespace AdminBundle\EventListener;
+namespace App\AdminBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;

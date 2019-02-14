@@ -1,5 +1,5 @@
 <?php
-namespace AdminBundle\Constant;
+namespace App\AdminBundle\Constant;
 
 class MerchantConstant
 {

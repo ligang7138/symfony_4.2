@@ -6,14 +6,14 @@
  * Time: 16:54
  */
 
-namespace AdminBundle\EventListener;
-use AdminBundle\Exception\MessageException;
+namespace App\AdminBundle\EventListener;
+use App\AdminBundle\Exception\MessageException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use AdminBundle\Common\CommonFunction;
+use App\AdminBundle\Common\CommonFunction;
 
 class RoleCheckListener
 {

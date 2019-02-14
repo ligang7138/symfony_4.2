@@ -1,5 +1,5 @@
 <?php
-namespace AdminBundle\Repository;
+namespace App\AdminBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 

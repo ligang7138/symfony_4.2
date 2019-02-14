@@ -1,5 +1,5 @@
 <?php
-namespace AdminBundle\EventListener;
+namespace App\AdminBundle\EventListener;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationSuccessHandler;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\HttpFoundation\Request;

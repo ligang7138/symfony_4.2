@@ -6,9 +6,9 @@
  * Time: 14:05
  */
 
-namespace AdminBundle\Services\Admin\Impl;
-use AdminBundle\Services\Service;
-use AdminBundle\Services\Admin\AdminService;
+namespace App\AdminBundle\Services\Admin\Impl;
+use App\AdminBundle\Services\Service;
+use App\AdminBundle\Services\Admin\AdminService;
 use Doctrine\DBAL\Driver\Connection;
 
 class AdminServiceImpl extends Service implements AdminService

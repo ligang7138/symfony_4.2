@@ -1,7 +1,6 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
-    redis_master_host: '%env(REDIS_MASTER_URL)%'
     #default_locale: en
     #csrf_protection: true
     #http_method_override: true

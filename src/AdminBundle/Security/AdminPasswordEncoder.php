@@ -5,7 +5,7 @@
  * Time: 2016/12/22 11:52
  */
 
-namespace AdminBundle\Security;
+namespace App\AdminBundle\Security;
 
 use Symfony\Component\Security\Core\Encoder\BasePasswordEncoder;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;

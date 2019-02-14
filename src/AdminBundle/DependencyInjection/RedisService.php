@@ -1,5 +1,5 @@
 <?php
-namespace AdminBundle\DependencyInjection;
+namespace App\AdminBundle\DependencyInjection;
 
 class RedisService {
     protected $redis;

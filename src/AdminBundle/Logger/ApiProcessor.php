@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace AdminBundle\Logger;
+namespace App\AdminBundle\Logger;
 
 /**
  * Injects url/method and remote IP of the current web request in all records

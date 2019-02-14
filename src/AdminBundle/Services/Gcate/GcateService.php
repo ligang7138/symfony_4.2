@@ -6,7 +6,7 @@
  * Time: 14:00
  */
 
-namespace AdminBundle\Services\Gcate;
+namespace App\AdminBundle\Services\Gcate;
 
 
 interface  GcateService

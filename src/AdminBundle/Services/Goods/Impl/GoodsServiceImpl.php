@@ -6,9 +6,9 @@
  * Time: 14:05
  */
 
-namespace AdminBundle\Services\Goods\Impl;
-use AdminBundle\Services\Service;
-use AdminBundle\Services\Goods\GoodsService;
+namespace App\AdminBundle\Services\Goods\Impl;
+use App\AdminBundle\Services\Service;
+use App\AdminBundle\Services\Goods\GoodsService;
 
 class GoodsServiceImpl extends Service implements GoodsService
 {

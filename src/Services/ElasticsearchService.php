@@ -12,7 +12,7 @@ class ElasticsearchService
 
     public static $_instance = null;
 
-    private function __construct($elastic)
+    public function __construct($elastic)
     {
         /*if (empty(self::$_instance) && $GLOBALS['app']->has('elastic_hosts')) {
             self::$_instance = ClientBuilder::create()

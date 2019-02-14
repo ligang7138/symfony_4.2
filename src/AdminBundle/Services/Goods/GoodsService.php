@@ -6,7 +6,7 @@
  * Time: 14:00
  */
 
-namespace AdminBundle\Services\Goods;
+namespace App\AdminBundle\Services\Goods;
 
 
 interface  GoodsService

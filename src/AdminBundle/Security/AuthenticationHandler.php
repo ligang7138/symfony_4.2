@@ -5,16 +5,16 @@
  * Time: 2016/12/22 18:23
  */
 
-namespace AdminBundle\Security;
-use AdminBundle\Common\MobileDetect;
+namespace App\AdminBundle\Security;
+use App\AdminBundle\Common\MobileDetect;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 
-use AdminBundle\Entity\AdminUsers;
-use AdminBundle\Security\WebserviceUser;
+use App\AdminBundle\Entity\AdminUsers;
+use App\AdminBundle\Security\WebserviceUser;
 
 class AuthenticationHandler implements UserProviderInterface
 {

@@ -6,9 +6,9 @@
  * Time: 13:50
  */
 
-namespace AdminBundle\Services\City\Impl;
-use AdminBundle\Services\Service;
-use AdminBundle\Services\City\CityService;
+namespace App\AdminBundle\Services\City\Impl;
+use App\AdminBundle\Services\Service;
+use App\AdminBundle\Services\City\CityService;
 
 class CityServiceImpl extends Service implements CityService
 {

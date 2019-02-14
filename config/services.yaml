@@ -17,9 +17,12 @@ services:
 #    App\:
 #        resource: '../src/*'
 #        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
-#    App\:
-#        resource: '../src/AdminBundle/Services/*'
-#        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+    App\:
+        resource: '../src/AdminBundle/'
+        exclude: '../src/AdminBundle/{Constant,Entity,Migrations,Tests,Kernel.php}'
+    Bundles\:
+        resource: '../src/Bundles/*'
+        exclude: '../src/Bundles/*/{Entity,Migrations,Tests,Kernel.php}'
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
 #    App\Controller\:

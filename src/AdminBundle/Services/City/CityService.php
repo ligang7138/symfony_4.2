@@ -1,5 +1,5 @@
 <?php
-namespace AdminBundle\Services\City;
+namespace App\AdminBundle\Services\City;
 /**
  * CityService 地址服务
  * @author [yangjun] <[cooljun@126.com]>

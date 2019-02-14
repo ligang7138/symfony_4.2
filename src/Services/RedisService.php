@@ -7,7 +7,7 @@ class RedisService {
 
     public static $redisCache;
 
-    function __construct($redis)
+    public function __construct($redis)
     {
 	    //$redis->auth('ys123456');
 //        $this->redis = $redis;
