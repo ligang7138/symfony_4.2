@@ -64,7 +64,14 @@ class PayController extends Controller
     /**
      * @Route("/test")
      */
-	public function test(){
+	public function test($id){
+       /* $coupons = $em->createQueryBuilder()
+            ->select('ca,pc.pcTitle,pc.pcId')
+            ->from('AdminBundle:QyCouponActivity', 'ca')
+            ->leftJoin('AdminBundle:QyPartnerCoupon', 'pc','WITH','ca.couponId = pc.pcId')
+            ->where('ca.acId = :id')
+            ->setParameters(['id' => $id])
+            ->getQuery()->getResult();*/
         return $this->render("@Pay/pay/index.html.twig",['name' => 33]);
     }
 }
