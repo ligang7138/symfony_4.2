@@ -27,6 +27,7 @@ class AuthenticationHandler implements UserProviderInterface
 
     public function loadUserByUsername($username)
     {
+        echo 23434;die;
         $request = $this->request->getCurrentRequest();
         $session = $request->getSession();
 

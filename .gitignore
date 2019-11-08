@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.*.local
@@ -19,3 +18,7 @@
 ###> phpstorm .idea ###
 /.idea
 ###< phpstorm .idea ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###

@@ -15,6 +15,7 @@ return [
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Symfony\Bundle\WebServerBundle\WebServerBundle::class => ['dev' => true],
     Snc\RedisBundle\SncRedisBundle::class => ['all' => true],
-	App\AdminBundle\AdminBundle::class => ['all' => true],
+    App\AdminBundle\AdminBundle::class => ['all' => true],
     Bundles\PayBundle\PayBundle::class => ['all' => true],
+    Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle::class => ['all' => true],
 ];

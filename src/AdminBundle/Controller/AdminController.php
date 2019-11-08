@@ -101,13 +101,14 @@ class AdminController extends CommonController
     }
     /**
      * 后台用户列表
-     * @Route("/user_list.html")
+     * @Route("/user_list.html",name="user-list")
      */
     public function userListAction(Request $request){
         $conditions = $this->getListAndLimt();
         $user_list = $this->getAdminService()->getAllUsers($conditions);
         $page = $this->get('page_service');
         $page->setPage($user_list['count'], $request->request->get('p',1),true,'UserList');//设置为ajax链接
+        $this->generateUrl('user-list');
         return $this->show('admin/user_list',['tabid'=>'UserList','user_list'=>$user_list['data'],'page'=>$page->show(),'params'=>$conditions]);
     }
     
